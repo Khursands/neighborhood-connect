@@ -1,0 +1,69 @@
+version: '3.9'
+
+services:
+  db:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_DATABASE: neighborhood_connect
+      MYSQL_USER: nc_user
+      MYSQL_PASSWORD: nc_pass
+      MYSQL_ROOT_PASSWORD: rootpass
+    volumes:
+      - db_data:/var/lib/mysql
+    networks:
+      - nc_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  wordpress:
+    image: wordpress:6.4-apache
+    restart: always
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:80"
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_NAME: neighborhood_connect
+      WORDPRESS_DB_USER: nc_user
+      WORDPRESS_DB_PASSWORD: nc_pass
+      WORDPRESS_TABLE_PREFIX: nc_
+      WORDPRESS_DEBUG: "true"
+      WORDPRESS_CONFIG_EXTRA: |
+        define('WP_MEMORY_LIMIT', '256M');
+        define('DISALLOW_FILE_EDIT', false);
+        define('WP_POST_REVISIONS', 5);
+    volumes:
+      - wordpress_data:/var/www/html
+      - ./theme/neighborhood-connect:/var/www/html/wp-content/themes/neighborhood-connect
+      - ./plugins/nc-core:/var/www/html/wp-content/plugins/nc-core
+      - ./plugins/nc-events:/var/www/html/wp-content/plugins/nc-events
+    networks:
+      - nc_network
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin:latest
+    restart: always
+    depends_on:
+      - db
+    ports:
+      - "8081:80"
+    environment:
+      PMA_HOST: db
+      PMA_PORT: 3306
+      MYSQL_ROOT_PASSWORD: rootpass
+    networks:
+      - nc_network
+
+volumes:
+  db_data:
+  wordpress_data:
+
+networks:
+  nc_network:
+    driver: bridge

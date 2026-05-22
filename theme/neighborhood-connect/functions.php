@@ -1,7 +1,7 @@
 <?php
 defined('ABSPATH') || exit;
 
-define('NC_VERSION', '1.0.0');
+define('NC_VERSION', '5.0.0');
 define('NC_DIR', get_template_directory());
 define('NC_URI', get_template_directory_uri());
 
@@ -44,10 +44,23 @@ add_action('after_setup_theme', 'nc_setup');
    Scripts & Styles
    ============================================================ */
 function nc_enqueue_assets() {
-    // Google Fonts
+    // Google Fonts preconnect
+    wp_enqueue_style('nc-fonts-preconnect-1', 'https://fonts.googleapis.com', [], null);
+    wp_enqueue_style('nc-fonts-preconnect-2', 'https://fonts.gstatic.com',    [], null);
+    add_filter('style_loader_tag', function($html, $handle) {
+        if ($handle === 'nc-fonts-preconnect-2') {
+            return str_replace("rel='stylesheet'", "rel='preconnect' crossorigin", $html);
+        }
+        if ($handle === 'nc-fonts-preconnect-1') {
+            return str_replace("rel='stylesheet'", "rel='preconnect'", $html);
+        }
+        return $html;
+    }, 10, 2);
+
+    // Google Fonts — Inter for body, Nunito for headings (friendlier, rounder display face)
     wp_enqueue_style(
         'nc-google-fonts',
-        'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap',
+        'https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,400&family=Nunito:wght@600;700;800;900&display=swap',
         [],
         null
     );
@@ -429,11 +442,11 @@ function nc_customize(WP_Customize_Manager $wp_customize) {
     ]);
 
     $settings = [
-        'nc_hero_title'       => ['default' => 'Your Neighborhood, Connected', 'label' => 'Hero Title'],
-        'nc_hero_description' => ['default' => 'Discover events, find local services, report issues, and connect with your neighbors in one place.', 'label' => 'Hero Description', 'type' => 'textarea'],
-        'nc_neighborhood'     => ['default' => 'Downtown Community', 'label' => 'Neighborhood Name'],
+        'nc_hero_title'       => ['default' => 'Lahore Ka Apna Digital Mohalla', 'label' => 'Hero Title'],
+        'nc_hero_description' => ['default' => 'Discover events, find local services, report civic issues, and connect with your neighbors across Lahore — all in one place.', 'label' => 'Hero Description', 'type' => 'textarea'],
+        'nc_neighborhood'     => ['default' => 'Lahore', 'label' => 'Neighborhood Name'],
         'nc_google_maps_key'  => ['default' => '', 'label' => 'Google Maps API Key'],
-        'nc_footer_tagline'   => ['default' => 'Building stronger, more connected communities one neighborhood at a time.', 'label' => 'Footer Tagline', 'type' => 'textarea'],
+        'nc_footer_tagline'   => ['default' => 'Building stronger, more connected communities across Lahore — one neighborhood at a time.', 'label' => 'Footer Tagline', 'type' => 'textarea'],
     ];
 
     foreach ($settings as $id => $config) {
@@ -508,4 +521,174 @@ $avatar_colors = ['#2563eb', '#059669', '#d97706', '#dc2626', '#7c3aed', '#db277
 function nc_avatar_color(int $user_id): string {
     global $avatar_colors;
     return $avatar_colors[$user_id % count($avatar_colors)];
+}
+
+/* ============================================================
+   Auth URL Filters
+   ============================================================ */
+add_filter('login_url', function ($url, $redirect) {
+    $page = get_page_by_path('login');
+    if ($page) {
+        $url = get_permalink($page->ID);
+        if ($redirect) $url = add_query_arg('redirect_to', urlencode($redirect), $url);
+    }
+    return $url;
+}, 10, 2);
+
+add_filter('register_url', function () {
+    $page = get_page_by_path('register');
+    return $page ? get_permalink($page->ID) : wp_registration_url();
+});
+
+/* ============================================================
+   AJAX: Login
+   ============================================================ */
+add_action('wp_ajax_nopriv_nc_ajax_login', 'nc_ajax_login');
+function nc_ajax_login() {
+    if (!check_ajax_referer('nc_nonce', 'nonce', false)) {
+        wp_send_json_error(['message' => 'Security check failed.'], 403);
+    }
+
+    $credentials = [
+        'user_login'    => sanitize_text_field($_POST['log'] ?? ''),
+        'user_password' => $_POST['pwd'] ?? '',
+        'remember'      => !empty($_POST['rememberme']),
+    ];
+
+    if (empty($credentials['user_login']) || empty($credentials['user_password'])) {
+        wp_send_json_error(['message' => 'Please enter your username and password.']);
+    }
+
+    $user = wp_signon($credentials, false);
+
+    if (is_wp_error($user)) {
+        wp_send_json_error(['message' => 'Invalid username or password. Please try again.']);
+    }
+
+    $redirect = sanitize_url($_POST['redirect_to'] ?? home_url('/'));
+    wp_send_json_success(['message' => 'Welcome back, ' . esc_html($user->display_name) . '!', 'redirect' => $redirect]);
+}
+
+/* ============================================================
+   AJAX: Register
+   ============================================================ */
+add_action('wp_ajax_nopriv_nc_ajax_register', 'nc_ajax_register');
+function nc_ajax_register() {
+    if (!check_ajax_referer('nc_nonce', 'nonce', false)) {
+        wp_send_json_error(['message' => 'Security check failed.'], 403);
+    }
+
+    if (!get_option('users_can_register')) {
+        wp_send_json_error(['message' => 'Registration is currently disabled.']);
+    }
+
+    $username   = sanitize_user($_POST['user_login'] ?? '');
+    $email      = sanitize_email($_POST['user_email'] ?? '');
+    $password   = $_POST['user_pass'] ?? '';
+    $first_name = sanitize_text_field($_POST['first_name'] ?? '');
+    $last_name  = sanitize_text_field($_POST['last_name'] ?? '');
+
+    if (!$username || !$email || !$password) {
+        wp_send_json_error(['message' => 'Please fill in all required fields.']);
+    }
+
+    if (!is_email($email)) {
+        wp_send_json_error(['message' => 'Please enter a valid email address.']);
+    }
+
+    if (username_exists($username)) {
+        wp_send_json_error(['message' => 'That username is already taken. Please choose another.']);
+    }
+
+    if (email_exists($email)) {
+        wp_send_json_error(['message' => 'An account with that email already exists.']);
+    }
+
+    if (strlen($password) < 8) {
+        wp_send_json_error(['message' => 'Password must be at least 8 characters long.']);
+    }
+
+    $user_id = wp_create_user($username, $password, $email);
+    if (is_wp_error($user_id)) {
+        wp_send_json_error(['message' => $user_id->get_error_message()]);
+    }
+
+    wp_update_user(['ID' => $user_id, 'first_name' => $first_name, 'last_name' => $last_name, 'display_name' => trim($first_name . ' ' . $last_name) ?: $username]);
+
+    // Auto login
+    wp_set_current_user($user_id);
+    wp_set_auth_cookie($user_id, false);
+
+    wp_send_json_success(['message' => 'Account created! Welcome, ' . esc_html($first_name ?: $username) . '!', 'redirect' => home_url('/')]);
+}
+
+/* ============================================================
+   AJAX: Report Issue
+   ============================================================ */
+add_action('wp_ajax_nc_ajax_report_issue', 'nc_ajax_report_issue');
+function nc_ajax_report_issue() {
+    if (!check_ajax_referer('nc_nonce', 'nonce', false)) {
+        wp_send_json_error(['message' => 'Security check failed.'], 403);
+    }
+
+    $title    = sanitize_text_field($_POST['title'] ?? '');
+    $desc     = sanitize_textarea_field($_POST['description'] ?? '');
+    $location = sanitize_text_field($_POST['location'] ?? '');
+    $type     = sanitize_text_field($_POST['issue_type'] ?? '');
+
+    if (!$title) {
+        wp_send_json_error(['message' => 'Please enter an issue title.']);
+    }
+
+    $id = wp_insert_post([
+        'post_title'   => $title,
+        'post_content' => $desc,
+        'post_status'  => 'publish',
+        'post_type'    => 'nc_issue',
+        'post_author'  => get_current_user_id(),
+    ]);
+
+    if (is_wp_error($id)) {
+        wp_send_json_error(['message' => 'Failed to create issue.']);
+    }
+
+    update_post_meta($id, '_nc_status', 'open');
+    if ($location) update_post_meta($id, '_nc_location', $location);
+    if ($type)     update_post_meta($id, '_nc_issue_type', $type);
+    update_post_meta($id, '_nc_votes', 0);
+
+    wp_send_json_success(['id' => $id, 'url' => get_permalink($id)]);
+}
+
+/* ============================================================
+   AJAX: Contact Service
+   ============================================================ */
+add_action('wp_ajax_nc_ajax_contact_service', 'nc_ajax_contact_service');
+function nc_ajax_contact_service() {
+    if (!check_ajax_referer('nc_nonce', 'nonce', false)) {
+        wp_send_json_error(['message' => 'Security check failed.'], 403);
+    }
+
+    $service_id = absint($_POST['service_id'] ?? 0);
+    $name       = sanitize_text_field($_POST['contact_name'] ?? '');
+    $email      = sanitize_email($_POST['contact_email'] ?? '');
+    $message    = sanitize_textarea_field($_POST['contact_message'] ?? '');
+
+    if (!$service_id || !$name || !$email || !$message) {
+        wp_send_json_error(['message' => 'Please fill in all fields.']);
+    }
+
+    // Get service owner email
+    $service = get_post($service_id);
+    $owner_email = get_post_meta($service_id, '_nc_email', true);
+    if (!$owner_email) {
+        $owner = get_userdata($service ? $service->post_author : 0);
+        $owner_email = $owner ? $owner->user_email : get_option('admin_email');
+    }
+
+    $subject = 'New inquiry for ' . get_the_title($service_id) . ' from ' . $name;
+    $body    = "Name: $name\nEmail: $email\n\n$message";
+    wp_mail($owner_email, $subject, $body, ['Reply-To: ' . $email]);
+
+    wp_send_json_success(['message' => 'Message sent successfully.']);
 }

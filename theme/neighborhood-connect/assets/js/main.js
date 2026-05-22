@@ -339,6 +339,8 @@
       const observer = new IntersectionObserver((entries) => {
         entries.forEach(entry => {
           if (entry.isIntersecting) {
+            entry.target.style.opacity = '';
+            entry.target.style.transform = '';
             entry.target.classList.add('animate-fade-in-up');
             observer.unobserve(entry.target);
           }
@@ -346,7 +348,6 @@
       }, { threshold: 0.1, rootMargin: '0px 0px -50px 0px' });
 
       document.querySelectorAll('.event-card, .service-card, .feature-card, .testimonial-card').forEach(el => {
-        el.style.opacity = '0';
         observer.observe(el);
       });
     }
@@ -557,6 +558,201 @@
   };
 
   /* ============================================================
+     Language Manager (English / Urdu)
+     ============================================================ */
+  const LanguageManager = {
+    STORAGE_KEY: 'nc-lang',
+    current: 'en',
+
+    // Full translation dictionary
+    dict: {
+      en: {
+        // Navigation
+        'nav-home':       'Home',
+        'nav-events':     ' Events',
+        'nav-services':   ' Services',
+        'nav-issues':     ' Issues',
+        'nav-community':  ' Community',
+        'nav-login':      'Log In',
+        'nav-join':       'Join Free',
+        'nav-profile':    'My Profile',
+        'nav-logout':     'Log Out',
+        // Archive heroes
+        'services-title': 'Local Services Directory',
+        'services-sub':   'Trusted professionals and businesses from your neighborhood — vetted by your neighbors.',
+        // Buttons & labels
+        'btn-rsvp':       'RSVP',
+        'btn-view-all':   'View All',
+        'btn-report':     'Report an Issue',
+        'btn-subscribe':  'Subscribe',
+        'btn-send':       'Send Message',
+        'btn-login':      'Sign In',
+        'btn-register':   'Create Account',
+        // Auth pages
+        'login-title':    'Sign in to your account',
+        'login-sub':      "Don't have an account?",
+        'register-title': 'Create your free account',
+        'register-sub':   'Already have an account?',
+        // Footer
+        'footer-stay':    'Stay Connected',
+        'footer-desc':    'Weekly neighborhood updates and event announcements.',
+        'footer-legal':   'No spam. Unsubscribe anytime.',
+        // Misc
+        'search-placeholder': 'Search plumbing, tutoring, cleaning…',
+        'all-filter':     'All',
+        'top-rated':      'Top Rated',
+        'newest':         'Newest',
+        'a-z':            'A–Z',
+      },
+      ur: {
+        // Navigation
+        'nav-home':       'ہوم',
+        'nav-events':     ' تقریبات',
+        'nav-services':   ' خدمات',
+        'nav-issues':     ' مسائل',
+        'nav-community':  ' کمیونٹی',
+        'nav-login':      'لاگ ان',
+        'nav-join':       'مفت شامل ہوں',
+        'nav-profile':    'میری پروفائل',
+        'nav-logout':     'لاگ آؤٹ',
+        // Archive heroes
+        'services-title': 'مقامی خدمات کی ڈائریکٹری',
+        'services-sub':   'آپ کے محلے کے قابل اعتماد پیشہ ور — آپ کے پڑوسیوں کی طرف سے تصدیق شدہ۔',
+        // Buttons & labels
+        'btn-rsvp':       'حاضری',
+        'btn-view-all':   'سب دیکھیں',
+        'btn-report':     'مسئلہ رپورٹ کریں',
+        'btn-subscribe':  'سبسکرائب کریں',
+        'btn-send':       'پیغام بھیجیں',
+        'btn-login':      'سائن ان',
+        'btn-register':   'اکاؤنٹ بنائیں',
+        // Auth pages
+        'login-title':    'اپنے اکاؤنٹ میں سائن ان کریں',
+        'login-sub':      'اکاؤنٹ نہیں ہے؟',
+        'register-title': 'مفت اکاؤنٹ بنائیں',
+        'register-sub':   'پہلے سے اکاؤنٹ ہے؟',
+        // Footer
+        'footer-stay':    'جڑے رہیں',
+        'footer-desc':    'ہفتہ وار محلے کی اپڈیٹس اور تقریبات کی اطلاعات۔',
+        'footer-legal':   'کوئی سپیم نہیں۔ کبھی بھی ان سبسکرائب کریں۔',
+        // Misc
+        'search-placeholder': 'پلمبنگ، ٹیوشن، صفائی تلاش کریں…',
+        'all-filter':     'سب',
+        'top-rated':      'بہترین درجہ بند',
+        'newest':         'تازہ ترین',
+        'a-z':            'الف–ی',
+      }
+    },
+
+    init() {
+      const saved = localStorage.getItem(this.STORAGE_KEY) || 'en';
+      this.apply(saved, false);
+
+      document.getElementById('lang-toggle')?.addEventListener('click', () => {
+        this.toggle();
+      });
+    },
+
+    toggle() {
+      const next = this.current === 'en' ? 'ur' : 'en';
+      localStorage.setItem(this.STORAGE_KEY, next);
+      this.apply(next, true);
+    },
+
+    apply(lang, animate) {
+      this.current = lang;
+      const html = document.documentElement;
+      html.setAttribute('data-lang', lang);
+      html.setAttribute('lang', lang === 'ur' ? 'ur' : 'en');
+      html.setAttribute('dir', lang === 'ur' ? 'rtl' : 'ltr');
+
+      // Update toggle to show only the OTHER language
+      const toggleLabel = document.getElementById('lang-label-text');
+      if (toggleLabel) toggleLabel.textContent = lang === 'en' ? 'اردو' : 'EN';
+
+      // Load Urdu font on first use
+      if (lang === 'ur' && !document.getElementById('nc-urdu-font')) {
+        const link = document.createElement('link');
+        link.id = 'nc-urdu-font';
+        link.rel = 'stylesheet';
+        link.href = 'https://fonts.googleapis.com/css2?family=Noto+Nastaliq+Urdu:wght@400;600;700&display=swap';
+        document.head.appendChild(link);
+      }
+
+      // Translate all data-i18n elements
+      document.querySelectorAll('[data-i18n]').forEach(el => {
+        const key = el.dataset.i18n;
+        const text = this.dict[lang]?.[key];
+        if (text !== undefined) el.textContent = text;
+      });
+
+      // Translate placeholder attributes
+      document.querySelectorAll('[data-i18n-placeholder]').forEach(el => {
+        const key = el.dataset.i18nPlaceholder;
+        const text = this.dict[lang]?.[key];
+        if (text !== undefined) el.placeholder = text;
+      });
+
+      // Translate archive search input placeholder
+      const svcSearch = document.getElementById('service-search-input');
+      if (svcSearch) svcSearch.placeholder = lang === 'ur' ? 'خدمات تلاش کریں…' : 'Search plumbing, tutoring, cleaning…';
+
+      const evtSearch = document.getElementById('event-search-input');
+      if (evtSearch) evtSearch.placeholder = lang === 'ur' ? 'تقریبات تلاش کریں…' : 'Search events…';
+
+      // Translate sort select options
+      document.querySelectorAll('#service-sort option').forEach(opt => {
+        const map = { rating: { en: 'Top Rated', ur: 'بہترین درجہ بند' }, newest: { en: 'Newest', ur: 'تازہ ترین' }, alpha: { en: 'A–Z', ur: 'الف–ی' } };
+        if (map[opt.value]) opt.textContent = map[opt.value][lang];
+      });
+
+      document.querySelectorAll('#event-sort option').forEach(opt => {
+        const map = { 'date-asc': { en: 'Soonest First', ur: 'قریب ترین پہلے' }, 'date-desc': { en: 'Latest First', ur: 'تازہ ترین پہلے' }, alpha: { en: 'A–Z', ur: 'الف–ی' } };
+        if (map[opt.value]) opt.textContent = map[opt.value][lang];
+      });
+
+      document.querySelectorAll('#issue-sort option').forEach(opt => {
+        const map = { votes: { en: 'Most Voted', ur: 'سب سے زیادہ ووٹ' }, newest: { en: 'Newest', ur: 'تازہ ترین' }, oldest: { en: 'Oldest', ur: 'پرانے' } };
+        if (map[opt.value]) opt.textContent = map[opt.value][lang];
+      });
+
+      // Translate filter chip "All" buttons
+      document.querySelectorAll('.filter-chip[data-cat="all"], .event-filter-btn[data-cat="all"]').forEach(btn => {
+        // Preserve icon if any
+        const icon = btn.querySelector('i');
+        const text = lang === 'ur' ? ' تمام' : ' All Events';
+        if (icon) {
+          btn.innerHTML = '';
+          btn.appendChild(icon);
+          btn.appendChild(document.createTextNode(btn.closest('.event-filter-bar') ? text : (lang === 'ur' ? 'تمام' : 'All')));
+        }
+      });
+
+      // Translate issue status tabs
+      const tabMap = { all: { en: 'All Issues', ur: 'تمام مسائل' }, open: { en: 'Open', ur: 'کھلے' }, in_progress: { en: 'In Progress', ur: 'جاری' }, resolved: { en: 'Resolved', ur: 'حل شدہ' } };
+      document.querySelectorAll('.issue-tab').forEach(tab => {
+        const status = tab.dataset.status;
+        if (tabMap[status]) {
+          const dot = tab.querySelector('.status-dot');
+          tab.textContent = tabMap[status][lang];
+          if (dot) tab.prepend(dot);
+        }
+      });
+
+      // Translate "All" filter chip in sidebar
+      document.querySelectorAll('.filter-chip[data-cat="all"]').forEach(btn => {
+        btn.textContent = lang === 'ur' ? 'تمام' : 'All';
+      });
+
+      // Toast confirmation
+      if (animate) {
+        const label = lang === 'ur' ? 'اردو میں تبدیل ہو گیا' : 'Switched to English';
+        Toast.show(label, '', 'info', 2000);
+      }
+    }
+  };
+
+  /* ============================================================
      Initialize Everything
      ============================================================ */
   document.addEventListener('DOMContentLoaded', () => {
@@ -574,6 +770,7 @@
     SearchAC.init();
     StickyHeader.init();
     CounterAnimation.init();
+    LanguageManager.init();
   });
 
   // Expose Toast globally for PHP-rendered inline scripts

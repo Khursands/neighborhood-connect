@@ -421,6 +421,112 @@ function nc_core_get_event_meta(int $id): array {
 }
 
 /* ============================================================
+   Default Event Seeding
+   ============================================================ */
+add_action('init', function () {
+    if (get_option('nc_default_events_seeded')) return;
+
+    // Only skip if events with a date meta already exist (events without date meta won't show in the front-page query)
+    $has_dated = get_posts([
+        'post_type'   => 'nc_event',
+        'post_status' => 'publish',
+        'numberposts' => 1,
+        'fields'      => 'ids',
+        'meta_query'  => [['key' => '_nc_event_date', 'compare' => 'EXISTS']],
+    ]);
+    if (!empty($has_dated)) {
+        update_option('nc_default_events_seeded', true);
+        return;
+    }
+
+    $defaults = [
+        [
+            'title'    => 'Community Block Party',
+            'excerpt'  => 'A wonderful block party for all residents of the neighbourhood. Music, food stalls, and games for the whole family. Come join us!',
+            'date'     => '2026-05-24',
+            'time'     => '10:00',
+            'end_time' => '14:00',
+            'location' => 'Gulberg III Park, Lahore',
+            'cat'      => 'community',
+            'capacity' => 150,
+        ],
+        [
+            'title'    => 'Saturday Farmers Market',
+            'excerpt'  => 'Fresh produce, homemade goods, and local artisans every Saturday morning. Support your neighbours and eat local!',
+            'date'     => '2026-05-25',
+            'time'     => '08:00',
+            'end_time' => '14:00',
+            'location' => 'Liberty Market, Lahore',
+            'cat'      => 'food',
+            'capacity' => 200,
+        ],
+        [
+            'title'    => 'Kids Soccer League',
+            'excerpt'  => 'Weekly soccer matches for kids aged 6–14. All skill levels welcome. Bring water and your team spirit!',
+            'date'     => '2026-05-27',
+            'time'     => '16:00',
+            'end_time' => '18:00',
+            'location' => 'DHA Phase 5, Lahore',
+            'cat'      => 'sports',
+            'capacity' => 50,
+        ],
+        [
+            'title'    => 'Neighbourhood Clean-Up',
+            'excerpt'  => 'Let\'s make our streets shine! Gloves and bags provided. A great way to meet neighbours while giving back to the community.',
+            'date'     => '2026-05-31',
+            'time'     => '09:00',
+            'end_time' => '12:00',
+            'location' => 'Johar Town Park, Lahore',
+            'cat'      => 'environment',
+            'capacity' => 80,
+        ],
+        [
+            'title'    => 'Art Workshop',
+            'excerpt'  => 'An afternoon of painting, sketching, and creativity. All materials provided. Open to adults and teenagers. No experience needed!',
+            'date'     => '2026-06-02',
+            'time'     => '14:00',
+            'end_time' => '17:00',
+            'location' => 'NCA Mall Road, Lahore',
+            'cat'      => 'arts',
+            'capacity' => 30,
+        ],
+        [
+            'title'    => 'Morning Yoga in the Park',
+            'excerpt'  => 'Start your day with a refreshing outdoor yoga session. Suitable for all fitness levels. Bring your own mat.',
+            'date'     => '2026-06-05',
+            'time'     => '06:30',
+            'end_time' => '08:00',
+            'location' => 'Jilani Park, Lahore',
+            'cat'      => 'health',
+            'capacity' => 40,
+        ],
+    ];
+
+    foreach ($defaults as $event) {
+        $post_id = wp_insert_post([
+            'post_title'   => $event['title'],
+            'post_excerpt' => $event['excerpt'],
+            'post_content' => $event['excerpt'],
+            'post_status'  => 'publish',
+            'post_type'    => 'nc_event',
+            'post_author'  => 1,
+        ]);
+
+        if ($post_id && !is_wp_error($post_id)) {
+            update_post_meta($post_id, '_nc_event_date',     $event['date']);
+            update_post_meta($post_id, '_nc_event_time',     $event['time']);
+            update_post_meta($post_id, '_nc_event_end_time', $event['end_time']);
+            update_post_meta($post_id, '_nc_location',       $event['location']);
+            update_post_meta($post_id, '_nc_event_category', $event['cat']);
+            update_post_meta($post_id, '_nc_capacity',       $event['capacity']);
+            update_post_meta($post_id, '_nc_rsvps',          []);
+        }
+    }
+
+    update_option('nc_default_events_seeded', true);
+}, 99);
+
+/* ============================================================
    Activation: Flush rewrite rules
    ============================================================ */
 register_activation_hook(__FILE__, function () {

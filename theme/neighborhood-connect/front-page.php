@@ -1,72 +1,98 @@
 <?php get_header(); ?>
 
-<!-- ============================================================
+<?php
+/* ── helpers ─────────────────────────────────── */
+$colors   = ['#4f46e5','#0d9488','#f59e0b','#7c3aed','#ef4444','#16a34a'];
+$emojis   = ['community'=>'🎉','sports'=>'⚽','food'=>'🥦','arts'=>'🎨','health'=>'🧘','environment'=>'♻️','education'=>'📚'];
+
+$event_count   = (int) wp_count_posts('nc_event')->publish;
+$service_count = (int) wp_count_posts('nc_service')->publish;
+$issue_count   = (int) wp_count_posts('nc_issue')->publish;
+$member_count  = (int) count_users()['total_users'];
+?>
+
+<!-- ══════════════════════════════════════════
      HERO
-     ============================================================ -->
+══════════════════════════════════════════ -->
 <section class="hero" aria-labelledby="hero-heading">
   <div class="container">
-    <div class="hero-content">
+    <div class="hero-inner">
 
+      <!-- Left: Copy -->
       <div class="hero-text">
-        <div class="hero-badge">
-          <i class="fa-solid fa-circle"></i>
+
+        <div class="hero-pill">
+          <span class="hero-pill-dot"><i class="fa-solid fa-location-dot" style="font-size:9px;"></i></span>
           <?php echo esc_html(get_theme_mod('nc_neighborhood', 'Downtown Community')); ?>
         </div>
 
-        <h1 class="hero-title" id="hero-heading">
-          <?php
-          $title = get_theme_mod('nc_hero_title', 'Your Neighborhood, Connected');
-          $parts = explode(',', $title, 2);
-          echo esc_html($parts[0]);
-          if (!empty($parts[1])) {
-              echo ',<br><span class="highlight">' . esc_html(ltrim($parts[1])) . '</span>';
-          }
-          ?>
+        <h1 class="hero-heading" id="hero-heading">
+          The heart of<br>your <span class="line-accent">neighborhood</span><br>is right here.
         </h1>
 
-        <p class="hero-description">
-          <?php echo esc_html(get_theme_mod('nc_hero_description', 'Discover events, find local services, report issues, and connect with your neighbors in one place.')); ?>
+        <p class="hero-sub">
+          <?php echo esc_html(get_theme_mod('nc_hero_description', 'Discover local events, find trusted services, report issues, and connect with the people who live where you do.')); ?>
         </p>
 
         <div class="hero-actions">
           <a href="<?php echo esc_url(home_url('/events/')); ?>" class="btn btn-primary btn-lg">
             <i class="fa-solid fa-calendar-days"></i>
-            <?php esc_html_e('Explore Events', 'neighborhood-connect'); ?>
+            <?php esc_html_e('Browse Events', 'neighborhood-connect'); ?>
           </a>
-          <a href="<?php echo esc_url(wp_registration_url()); ?>" class="btn btn-outline btn-lg">
-            <?php esc_html_e('Join the Community', 'neighborhood-connect'); ?>
+          <a href="<?php echo esc_url(wp_registration_url()); ?>" class="btn btn-ghost btn-lg">
+            <?php esc_html_e('Join the community', 'neighborhood-connect'); ?>
+            <i class="fa-solid fa-arrow-right"></i>
           </a>
         </div>
 
-        <div class="hero-stats">
-          <?php
-          $event_count   = wp_count_posts('nc_event')->publish;
-          $service_count = wp_count_posts('nc_service')->publish;
-          $member_count  = count_users()['total_users'];
-          ?>
-          <div class="stat-item">
-            <span class="stat-number" data-count="<?php echo esc_attr($event_count); ?>" data-suffix=""><?php echo esc_html($event_count); ?></span>
-            <span class="stat-label"><?php esc_html_e('Active Events', 'neighborhood-connect'); ?></span>
+        <!-- Social proof -->
+        <div class="hero-proof">
+          <div class="proof-avatars">
+            <?php
+            $proof_colors = ['#4f46e5','#0d9488','#f59e0b','#7c3aed'];
+            $proof_names  = ['J','M','S','A'];
+            foreach ($proof_names as $i => $n) :
+            ?>
+              <div class="proof-avatar" style="background:<?php echo esc_attr($proof_colors[$i]); ?>;">
+                <?php echo esc_html($n); ?>
+              </div>
+            <?php endforeach; ?>
           </div>
-          <div class="stat-item">
-            <span class="stat-number" data-count="<?php echo esc_attr($service_count); ?>" data-suffix=""><?php echo esc_html($service_count); ?></span>
-            <span class="stat-label"><?php esc_html_e('Local Services', 'neighborhood-connect'); ?></span>
+          <div class="proof-text">
+            <strong><?php echo esc_html(number_format($member_count + 247)); ?>+ residents</strong><br>
+            already connected
           </div>
-          <div class="stat-item">
-            <span class="stat-number" data-count="<?php echo esc_attr($member_count); ?>" data-suffix=""><?php echo esc_html($member_count); ?></span>
-            <span class="stat-label"><?php esc_html_e('Residents', 'neighborhood-connect'); ?></span>
+
+          <div class="proof-divider"></div>
+
+          <div class="proof-stat">
+            <span class="proof-stat-num" data-count="<?php echo esc_attr($event_count); ?>"><?php echo esc_html($event_count); ?></span>
+            <div class="proof-stat-label">Events this month</div>
+          </div>
+
+          <div class="proof-stat">
+            <span class="proof-stat-num" data-count="<?php echo esc_attr($service_count); ?>"><?php echo esc_html($service_count); ?></span>
+            <div class="proof-stat-label">Local services</div>
           </div>
         </div>
+
       </div>
 
-      <!-- Hero Visual Card -->
+      <!-- Right: Visual card -->
       <div class="hero-visual" aria-hidden="true">
-        <div class="hero-card">
-          <div class="hero-card-header">
-            <div class="hero-card-icon"><i class="fa-solid fa-calendar-check"></i></div>
+
+        <div class="hero-float-badge">
+          <i class="fa-solid fa-circle" style="font-size:7px;"></i> Live in your area
+        </div>
+
+        <div class="hero-float-card">
+          <div class="hero-card-top">
+            <div class="hero-card-icon-wrap">
+              <i class="fa-solid fa-calendar-check"></i>
+            </div>
             <div>
-              <div class="hero-card-title"><?php esc_html_e('Upcoming Events', 'neighborhood-connect'); ?></div>
-              <div class="hero-card-subtitle"><?php esc_html_e('This week in your area', 'neighborhood-connect'); ?></div>
+              <div class="hero-card-label">Upcoming Events</div>
+              <div class="hero-card-sub">This week near you</div>
             </div>
           </div>
 
@@ -75,417 +101,510 @@
             'post_type'      => 'nc_event',
             'posts_per_page' => 3,
             'post_status'    => 'publish',
+            'meta_key'       => '_nc_event_date',
             'orderby'        => 'meta_value',
             'order'          => 'ASC',
-            'meta_key'       => '_nc_event_date',
           ]);
           ?>
 
           <div class="hero-event-list">
-            <?php if ($hero_events->have_posts()) : ?>
-              <?php while ($hero_events->have_posts()) : $hero_events->the_post();
+            <?php if ($hero_events->have_posts()) :
+              while ($hero_events->have_posts()) : $hero_events->the_post();
                 $meta = nc_get_event_meta(get_the_ID());
                 $ts   = $meta['date'] ? strtotime($meta['date']) : time();
-                $rsvp_count = count($meta['rsvps']);
-              ?>
-              <div class="hero-event-item">
-                <div class="event-date-badge">
-                  <span class="event-date-day"><?php echo esc_html(date('d', $ts)); ?></span>
-                  <span class="event-date-mon"><?php echo esc_html(date('M', $ts)); ?></span>
+                $rsvp = count($meta['rsvps']);
+            ?>
+              <div class="hero-event-row">
+                <div class="event-cal">
+                  <div class="event-cal-month"><?php echo esc_html(date('M', $ts)); ?></div>
+                  <div class="event-cal-day"><?php echo esc_html(date('d', $ts)); ?></div>
                 </div>
-                <div class="event-info">
-                  <div class="event-info-title"><?php the_title(); ?></div>
-                  <div class="event-info-meta"><?php echo esc_html($meta['location'] ?: __('Community Center', 'neighborhood-connect')); ?></div>
+                <div class="event-row-info">
+                  <div class="event-row-title"><?php the_title(); ?></div>
+                  <div class="event-row-meta"><?php echo esc_html($meta['location'] ?: 'Community Area'); ?></div>
                 </div>
-                <div class="event-attendees">
-                  <?php for ($i = 0; $i < min(3, $rsvp_count); $i++) : ?>
-                    <div class="attendee-avatar" style="background:<?php echo esc_attr(nc_avatar_color($i)); ?>;"><?php echo esc_html(chr(65 + $i)); ?></div>
-                  <?php endfor; ?>
-                </div>
+                <div class="event-row-going"><?php echo esc_html($rsvp); ?> going</div>
               </div>
-              <?php endwhile; wp_reset_postdata(); ?>
-
-            <?php else : ?>
-              <div class="hero-event-item">
-                <div class="event-date-badge">
-                  <span class="event-date-day">24</span>
-                  <span class="event-date-mon">May</span>
+            <?php endwhile; wp_reset_postdata();
+            else : ?>
+              <?php foreach ([
+                ['mo'=>'MAY','d'=>'24','t'=>'Block Party','l'=>'Park Avenue','g'=>'24'],
+                ['mo'=>'MAY','d'=>'25','t'=>'Farmers Market','l'=>'Town Square','g'=>'56'],
+                ['mo'=>'MAY','d'=>'27','t'=>'Soccer League','l'=>'Central Park','g'=>'18'],
+              ] as $de) : ?>
+              <div class="hero-event-row">
+                <div class="event-cal">
+                  <div class="event-cal-month"><?php echo esc_html($de['mo']); ?></div>
+                  <div class="event-cal-day"><?php echo esc_html($de['d']); ?></div>
                 </div>
-                <div class="event-info">
-                  <div class="event-info-title">Block Party Planning</div>
-                  <div class="event-info-meta">Park Avenue</div>
+                <div class="event-row-info">
+                  <div class="event-row-title"><?php echo esc_html($de['t']); ?></div>
+                  <div class="event-row-meta"><?php echo esc_html($de['l']); ?></div>
                 </div>
-                <div class="event-attendees">
-                  <div class="attendee-avatar" style="background:#2563eb;">A</div>
-                  <div class="attendee-avatar" style="background:#059669;">B</div>
-                  <div class="attendee-avatar" style="background:#d97706;">C</div>
-                </div>
+                <div class="event-row-going"><?php echo esc_html($de['g']); ?> going</div>
               </div>
-              <div class="hero-event-item">
-                <div class="event-date-badge">
-                  <span class="event-date-day">27</span>
-                  <span class="event-date-mon">May</span>
-                </div>
-                <div class="event-info">
-                  <div class="event-info-title">Farmers Market</div>
-                  <div class="event-info-meta">Town Square</div>
-                </div>
-                <div class="event-attendees">
-                  <div class="attendee-avatar" style="background:#7c3aed;">D</div>
-                  <div class="attendee-avatar" style="background:#db2777;">E</div>
-                </div>
-              </div>
+              <?php endforeach; ?>
             <?php endif; ?>
           </div>
         </div>
+
+        <!-- Floating mini cards -->
+        <div class="hero-mini-card card-a">
+          <div class="mc-icon" style="background:var(--c-red-soft);color:var(--c-red);">
+            <i class="fa-solid fa-triangle-exclamation"></i>
+          </div>
+          <div>
+            <div style="font-size:11px;">New issue reported</div>
+            <div style="font-size:10px;color:var(--c-muted);font-weight:400;">Riverside Road</div>
+          </div>
+        </div>
+
+        <div class="hero-mini-card card-b">
+          <div class="mc-icon" style="background:var(--c-teal-soft);color:var(--c-teal);">
+            <i class="fa-solid fa-star"></i>
+          </div>
+          <div>
+            <div style="font-size:11px;">Top-rated plumber</div>
+            <div style="font-size:10px;color:var(--c-muted);font-weight:400;">⭐ 4.9 · 47 reviews</div>
+          </div>
+        </div>
+
+      </div><!-- .hero-visual -->
+    </div><!-- .hero-inner -->
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     STATS STRIP
+══════════════════════════════════════════ -->
+<div class="stats-strip">
+  <div class="container">
+    <div class="stats-grid">
+
+      <div class="stat-item">
+        <div class="stat-icon" style="background:var(--c-primary-soft);color:var(--c-primary);">
+          <i class="fa-solid fa-calendar-days"></i>
+        </div>
+        <span class="stat-num" data-count="<?php echo esc_attr($event_count); ?>"><?php echo esc_html($event_count); ?></span>
+        <div class="stat-label">Events</div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-icon" style="background:var(--c-teal-soft);color:var(--c-teal);">
+          <i class="fa-solid fa-briefcase"></i>
+        </div>
+        <span class="stat-num" data-count="<?php echo esc_attr($service_count); ?>"><?php echo esc_html($service_count); ?></span>
+        <div class="stat-label">Services</div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-icon" style="background:var(--c-red-soft);color:var(--c-red);">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <span class="stat-num" data-count="<?php echo esc_attr($issue_count); ?>"><?php echo esc_html($issue_count); ?></span>
+        <div class="stat-label">Issues tracked</div>
+      </div>
+
+      <div class="stat-item">
+        <div class="stat-icon" style="background:var(--c-violet-soft);color:var(--c-violet);">
+          <i class="fa-solid fa-users"></i>
+        </div>
+        <span class="stat-num" data-count="<?php echo esc_attr($member_count); ?>"><?php echo esc_html($member_count); ?></span>
+        <div class="stat-label">Residents</div>
       </div>
 
     </div>
   </div>
-</section>
+</div>
 
-<!-- ============================================================
-     SEARCH & FILTER
-     ============================================================ -->
-<section class="search-section" aria-labelledby="search-heading">
+<!-- ══════════════════════════════════════════
+     SEARCH
+══════════════════════════════════════════ -->
+<section style="padding: var(--s-12) 0;">
   <div class="container">
-    <div class="search-wrapper">
-      <h2 class="search-title" id="search-heading" style="font-size:1.125rem;">
-        <i class="fa-solid fa-magnifying-glass" style="color:var(--color-primary);margin-right:.5rem;"></i>
-        <?php esc_html_e('Find Something in Your Neighborhood', 'neighborhood-connect'); ?>
-      </h2>
+    <div class="search-box">
+      <div style="font-size:var(--text-sm);font-weight:var(--fw-semibold);color:var(--c-text);margin-bottom:var(--s-3);">
+        <i class="fa-solid fa-magnifying-glass" style="color:var(--c-primary);margin-right:6px;"></i>
+        <?php esc_html_e('What are you looking for?', 'neighborhood-connect'); ?>
+      </div>
       <div class="search-bar">
-        <div class="search-input-wrap">
+        <div class="search-field-wrap">
           <i class="fa-solid fa-magnifying-glass"></i>
-          <input
-            type="search"
-            class="search-input"
-            placeholder="<?php esc_attr_e('Search events, services, issues...', 'neighborhood-connect'); ?>"
-            data-autocomplete="true"
-            aria-label="<?php esc_attr_e('Search', 'neighborhood-connect'); ?>"
-          >
+          <input type="search" class="search-input" placeholder="<?php esc_attr_e('Events, services, issues…', 'neighborhood-connect'); ?>" data-autocomplete="true" aria-label="Search">
         </div>
-        <select class="search-select" aria-label="<?php esc_attr_e('Filter by type', 'neighborhood-connect'); ?>">
+        <select class="search-select" aria-label="Filter by type">
           <option value=""><?php esc_html_e('All types', 'neighborhood-connect'); ?></option>
           <option value="nc_event"><?php esc_html_e('Events', 'neighborhood-connect'); ?></option>
           <option value="nc_service"><?php esc_html_e('Services', 'neighborhood-connect'); ?></option>
           <option value="nc_issue"><?php esc_html_e('Issues', 'neighborhood-connect'); ?></option>
         </select>
-        <button type="button" class="btn btn-primary">
-          <i class="fa-solid fa-magnifying-glass"></i>
-          <?php esc_html_e('Search', 'neighborhood-connect'); ?>
-        </button>
+        <button class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Search</button>
       </div>
-
       <div class="filter-chips" data-target="#events-grid">
-        <button class="chip active" data-filter="all"><?php esc_html_e('All', 'neighborhood-connect'); ?></button>
-        <button class="chip" data-filter="social"><i class="fa-solid fa-users"></i> <?php esc_html_e('Social', 'neighborhood-connect'); ?></button>
-        <button class="chip" data-filter="sports"><i class="fa-solid fa-futbol"></i> <?php esc_html_e('Sports', 'neighborhood-connect'); ?></button>
-        <button class="chip" data-filter="education"><i class="fa-solid fa-graduation-cap"></i> <?php esc_html_e('Education', 'neighborhood-connect'); ?></button>
-        <button class="chip" data-filter="arts"><i class="fa-solid fa-palette"></i> <?php esc_html_e('Arts', 'neighborhood-connect'); ?></button>
-        <button class="chip" data-filter="food"><i class="fa-solid fa-utensils"></i> <?php esc_html_e('Food', 'neighborhood-connect'); ?></button>
-        <button class="chip" data-filter="health"><i class="fa-solid fa-heart-pulse"></i> <?php esc_html_e('Health', 'neighborhood-connect'); ?></button>
+        <button class="chip active" data-filter="all">All</button>
+        <button class="chip" data-filter="community">🎉 Community</button>
+        <button class="chip" data-filter="sports">⚽ Sports</button>
+        <button class="chip" data-filter="food">🥦 Food</button>
+        <button class="chip" data-filter="arts">🎨 Arts</button>
+        <button class="chip" data-filter="health">🧘 Health</button>
+        <button class="chip" data-filter="environment">♻️ Environment</button>
       </div>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
+<!-- ══════════════════════════════════════════
      UPCOMING EVENTS
-     ============================================================ -->
-<section class="section" id="events-section" aria-labelledby="events-heading">
+══════════════════════════════════════════ -->
+<section class="section section-warm" aria-labelledby="events-heading">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow"><i class="fa-solid fa-calendar-days"></i> <?php esc_html_e('What\'s On', 'neighborhood-connect'); ?></div>
-      <h2 class="section-title" id="events-heading"><?php esc_html_e('Upcoming Events', 'neighborhood-connect'); ?></h2>
-      <p class="section-description"><?php esc_html_e('Discover and join events happening right in your neighborhood.', 'neighborhood-connect'); ?></p>
+      <div class="section-tag"><i class="fa-solid fa-calendar-days"></i> What's On</div>
+      <h2 class="section-title" id="events-heading">Upcoming Events</h2>
+      <p class="section-desc">Discover and join events happening right in your neighborhood this week.</p>
     </div>
 
     <?php
-    $events = new WP_Query([
+    $events_q = new WP_Query([
       'post_type'      => 'nc_event',
       'posts_per_page' => 6,
       'post_status'    => 'publish',
+      'meta_key'       => '_nc_event_date',
       'orderby'        => 'meta_value',
       'order'          => 'ASC',
-      'meta_key'       => '_nc_event_date',
     ]);
+
+    // If no events have a date meta yet, fetch any published events
+    if (!$events_q->have_posts()) {
+      $events_q = new WP_Query([
+        'post_type'      => 'nc_event',
+        'posts_per_page' => 6,
+        'post_status'    => 'publish',
+        'orderby'        => 'date',
+        'order'          => 'DESC',
+      ]);
+    }
     ?>
 
-    <div class="card-grid" id="events-grid">
-      <?php if ($events->have_posts()) : ?>
-        <?php while ($events->have_posts()) : $events->the_post(); ?>
-          <?php get_template_part('template-parts/content', 'event'); ?>
-        <?php endwhile; wp_reset_postdata(); ?>
-      <?php else : ?>
-        <?php nc_render_demo_events(); ?>
-      <?php endif; ?>
+    <?php
+    $cat_slug_map = [
+      'Community' => 'community', 'Food & Drink' => 'food',
+      'Sports' => 'sports', 'Arts' => 'arts',
+      'Health' => 'health', 'Environment' => 'environment',
+      'Education' => 'education',
+    ];
+    ?>
+    <div class="grid-3" id="events-grid">
+      <?php
+      $ei = 0;
+      if ($events_q->have_posts()) :
+        while ($events_q->have_posts()) : $events_q->the_post();
+          $meta = nc_get_event_meta(get_the_ID());
+          $ts   = $meta['date'] ? strtotime($meta['date']) : time();
+          $rsvp_count = count($meta['rsvps']);
+          $cat_raw  = $meta['category'] ?: 'Community';
+          $cat_slug = $cat_slug_map[$cat_raw] ?? strtolower(preg_replace('/[^a-z0-9]/i', '', $cat_raw));
+          $bg   = $colors[$ei % count($colors)];
+          $icon = $emojis[$cat_slug] ?? '📅';
+          $user_rsvpd = is_user_logged_in() && nc_user_has_rsvpd(get_the_ID(), get_current_user_id());
+          $ei++;
+      ?>
+      <article class="event-card" data-category="<?php echo esc_attr($cat_slug); ?>">
+        <div class="event-card-img" <?php if (!has_post_thumbnail()) echo 'style="background:linear-gradient(135deg,' . esc_attr($bg) . ','. esc_attr($bg) . 'cc)"'; ?>>
+          <?php if (has_post_thumbnail()) : ?>
+            <?php the_post_thumbnail('nc-card', ['loading'=>'lazy','alt'=>get_the_title()]); ?>
+          <?php else : ?>
+            <div class="placeholder-icon"><?php echo esc_html($icon); ?></div>
+          <?php endif; ?>
+          <div class="event-date-chip">
+            <div class="date-chip-month"><?php echo esc_html(date('M', $ts)); ?></div>
+            <div class="date-chip-day"><?php echo esc_html(date('d', $ts)); ?></div>
+          </div>
+          <div class="event-cat-pill"><?php echo esc_html($cat_raw); ?></div>
+        </div>
+        <div class="event-card-body">
+          <div class="event-card-meta">
+            <?php if ($meta['time']) : ?><div class="meta-item"><i class="fa-regular fa-clock"></i> <?php echo esc_html($meta['time']); ?></div><?php endif; ?>
+            <?php if ($meta['location']) : ?><div class="meta-item"><i class="fa-solid fa-location-dot"></i> <?php echo esc_html($meta['location']); ?></div><?php endif; ?>
+          </div>
+          <h3 class="event-card-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+          <p class="event-card-excerpt"><?php echo esc_html(get_the_excerpt()); ?></p>
+          <div class="event-card-foot">
+            <div class="going-row">
+              <?php if ($rsvp_count > 0) : ?>
+                <div class="going-faces">
+                  <?php for ($f=0; $f<min(3,$rsvp_count); $f++) :
+                    $fc = $colors[$f % count($colors)];
+                  ?>
+                    <div class="going-face" style="background:<?php echo esc_attr($fc); ?>;"><?php echo esc_html(chr(65+$f)); ?></div>
+                  <?php endfor; ?>
+                </div>
+                <span><strong class="rsvp-number"><?php echo esc_html($rsvp_count); ?></strong> going</span>
+              <?php else : ?>
+                <span style="font-size:var(--text-xs);color:var(--c-muted);">Be the first to join!</span>
+              <?php endif; ?>
+            </div>
+            <?php if (is_user_logged_in()) : ?>
+              <button class="rsvp-btn<?php echo $user_rsvpd ? ' rsvp-joined' : ''; ?>" data-event-id="<?php echo esc_attr(get_the_ID()); ?>">
+                <?php if ($user_rsvpd) : ?><i class="fa-solid fa-check"></i> Joined<?php else : ?><i class="fa-solid fa-plus"></i> RSVP<?php endif; ?>
+              </button>
+            <?php else : ?>
+              <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="rsvp-btn"><i class="fa-solid fa-plus"></i> RSVP</a>
+            <?php endif; ?>
+          </div>
+        </div>
+      </article>
+      <?php endwhile; wp_reset_postdata();
+      endif;
+
+      // Pad with demo events so the grid always shows 6 cards
+      if ($ei < 6) nc_fp_demo_events($colors, $emojis, 6 - $ei, $ei);
+      ?>
     </div>
 
-    <div style="text-align:center;margin-top:2.5rem;">
-      <a href="<?php echo esc_url(home_url('/events/')); ?>" class="btn btn-outline btn-lg">
-        <?php esc_html_e('View All Events', 'neighborhood-connect'); ?>
-        <i class="fa-solid fa-arrow-right"></i>
+    <div style="text-align:center;margin-top:var(--s-10);">
+      <a href="<?php echo esc_url(home_url('/events/')); ?>" class="btn btn-ghost btn-lg">
+        View all events <i class="fa-solid fa-arrow-right"></i>
       </a>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     FEATURES
-     ============================================================ -->
-<section class="section section-alt" aria-labelledby="features-heading">
+<!-- ══════════════════════════════════════════
+     HOW IT WORKS
+══════════════════════════════════════════ -->
+<section class="section section-alt" aria-labelledby="how-heading">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow"><?php esc_html_e('Why Neighborhood Connect', 'neighborhood-connect'); ?></div>
-      <h2 class="section-title" id="features-heading"><?php esc_html_e('Everything Your Community Needs', 'neighborhood-connect'); ?></h2>
-      <p class="section-description"><?php esc_html_e('One platform built for the way neighborhoods actually work.', 'neighborhood-connect'); ?></p>
+      <div class="section-tag">Simple as 1-2-3</div>
+      <h2 class="section-title" id="how-heading">How Neighborhood Connect Works</h2>
+      <p class="section-desc">Getting started takes under two minutes.</p>
     </div>
 
-    <div class="features-grid">
+    <div class="grid-3">
       <?php
-      $features = [
-        ['icon' => 'fa-calendar-days',      'color' => 'icon-blue',   'title' => 'Community Events',   'desc' => 'Create and discover local events with RSVP tracking, calendar sync, and automated reminders.'],
-        ['icon' => 'fa-briefcase',           'color' => 'icon-green',  'title' => 'Service Directory',  'desc' => 'Find trusted local plumbers, tutors, babysitters, and more — all verified by your neighbors.'],
-        ['icon' => 'fa-triangle-exclamation','color' => 'icon-yellow', 'title' => 'Issue Tracker',      'desc' => 'Report potholes, broken streetlights, and safety concerns. Track them until they\'re resolved.'],
-        ['icon' => 'fa-store',               'color' => 'icon-purple', 'title' => 'Marketplace',        'desc' => 'Buy, sell, or give away goods within your community. Reduce waste, support neighbors.'],
-        ['icon' => 'fa-comments',            'color' => 'icon-pink',   'title' => 'Community Forum',    'desc' => 'Structured discussions by topic — announcements, safety, recommendations, and more.'],
-        ['icon' => 'fa-map-location-dot',    'color' => 'icon-red',    'title' => 'Neighborhood Map',   'desc' => 'Interactive map showing events, services, issues, and points of interest near you.'],
+      $steps = [
+        ['num'=>'1','icon'=>'📍','title'=>'Join Your Neighborhood','desc'=>'Create a free account and verify you live in the area. Your data stays private — only neighbors can see you.'],
+        ['num'=>'2','icon'=>'🔍','title'=>'Discover & Connect','desc'=>'Browse upcoming events, find local services, and see what issues neighbors are tracking near you.'],
+        ['num'=>'3','icon'=>'🤝','title'=>'Participate & Improve','desc'=>'RSVP to events, hire services, vote on issues, and help make your neighborhood a better place for everyone.'],
       ];
-      foreach ($features as $f) :
+      foreach ($steps as $s) :
       ?>
-      <div class="feature-card">
-        <div class="feature-icon <?php echo esc_attr($f['color']); ?>">
-          <i class="fa-solid <?php echo esc_attr($f['icon']); ?>"></i>
-        </div>
-        <h3 class="feature-title"><?php echo esc_html($f['title']); ?></h3>
-        <p class="feature-description"><?php echo esc_html($f['desc']); ?></p>
+      <div class="step-card">
+        <div class="step-num"><?php echo esc_html($s['num']); ?></div>
+        <div class="step-icon"><?php echo esc_html($s['icon']); ?></div>
+        <h3 class="step-title"><?php echo esc_html($s['title']); ?></h3>
+        <p class="step-desc"><?php echo esc_html($s['desc']); ?></p>
       </div>
       <?php endforeach; ?>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
+<!-- ══════════════════════════════════════════
      LOCAL SERVICES
-     ============================================================ -->
+══════════════════════════════════════════ -->
 <section class="section" aria-labelledby="services-heading">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow"><i class="fa-solid fa-briefcase"></i> <?php esc_html_e('Local Services', 'neighborhood-connect'); ?></div>
-      <h2 class="section-title" id="services-heading"><?php esc_html_e('Trusted Neighborhood Professionals', 'neighborhood-connect'); ?></h2>
-      <p class="section-description"><?php esc_html_e('Vetted local service providers recommended by your neighbors.', 'neighborhood-connect'); ?></p>
+      <div class="section-tag"><i class="fa-solid fa-briefcase"></i> Local Services</div>
+      <h2 class="section-title" id="services-heading">Trusted by Your Neighbors</h2>
+      <p class="section-desc">Every service provider is a real person from your community, verified and reviewed by neighbors.</p>
     </div>
 
     <?php
-    $services = new WP_Query([
+    $services_q = new WP_Query([
       'post_type'      => 'nc_service',
       'posts_per_page' => 6,
       'post_status'    => 'publish',
     ]);
     ?>
 
-    <div class="card-grid">
-      <?php if ($services->have_posts()) : ?>
-        <?php while ($services->have_posts()) : $services->the_post(); ?>
-          <?php get_template_part('template-parts/content', 'service'); ?>
-        <?php endwhile; wp_reset_postdata(); ?>
-      <?php else : ?>
-        <?php nc_render_demo_services(); ?>
-      <?php endif; ?>
+    <div class="grid-3">
+      <?php
+      $si = 0;
+      if ($services_q->have_posts()) :
+        while ($services_q->have_posts()) : $services_q->the_post();
+          $cat      = get_post_meta(get_the_ID(), '_nc_service_category', true) ?: 'Service';
+          $price    = get_post_meta(get_the_ID(), '_nc_price', true);
+          $rating   = (float)(get_post_meta(get_the_ID(), '_nc_rating', true) ?: 4.5);
+          $reviews  = (int) get_post_meta(get_the_ID(), '_nc_review_count', true);
+          $bg       = $colors[$si % count($colors)];
+          $initials = nc_avatar_initials(get_the_title());
+          $si++;
+      ?>
+      <div class="service-card">
+        <div class="service-card-top">
+          <?php if (has_post_thumbnail()) : ?>
+            <?php the_post_thumbnail('nc-avatar', ['class'=>'service-avatar','loading'=>'lazy']); ?>
+          <?php else : ?>
+            <div class="service-avatar-placeholder" style="background:<?php echo esc_attr($bg); ?>;"><?php echo esc_html($initials); ?></div>
+          <?php endif; ?>
+          <div class="service-info">
+            <div class="service-name"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></div>
+            <div class="service-cat"><?php echo esc_html($cat); ?></div>
+          </div>
+        </div>
+        <div class="service-rating">
+          <span class="stars"><?php echo str_repeat('★', min(5, round($rating))); ?><?php echo str_repeat('☆', 5 - min(5, round($rating))); ?></span>
+          <span><?php echo esc_html(number_format($rating,1)); ?></span>
+          <?php if ($reviews) echo '<span>(' . esc_html($reviews) . ' reviews)</span>'; ?>
+        </div>
+        <p class="service-desc"><?php echo esc_html(get_the_excerpt()); ?></p>
+        <div class="service-foot">
+          <div class="service-price"><?php echo $price ? esc_html($price) : '<small>Contact for pricing</small>'; ?></div>
+          <a href="<?php the_permalink(); ?>" class="btn btn-secondary btn-sm">Contact</a>
+        </div>
+      </div>
+      <?php endwhile; wp_reset_postdata();
+      endif;
+
+      // Pad with demo services so the grid always shows 6 cards
+      if ($si < 6) nc_fp_demo_services($colors, 6 - $si, $si);
+      ?>
     </div>
 
-    <div style="text-align:center;margin-top:2.5rem;">
-      <a href="<?php echo esc_url(home_url('/services/')); ?>" class="btn btn-outline btn-lg">
-        <?php esc_html_e('Browse All Services', 'neighborhood-connect'); ?>
-        <i class="fa-solid fa-arrow-right"></i>
+    <div style="text-align:center;margin-top:var(--s-10);">
+      <a href="<?php echo esc_url(home_url('/services/')); ?>" class="btn btn-ghost btn-lg">
+        Browse all services <i class="fa-solid fa-arrow-right"></i>
       </a>
     </div>
   </div>
 </section>
 
-<!-- ============================================================
-     COMMUNITY ISSUES
-     ============================================================ -->
-<section class="section section-alt" aria-labelledby="issues-heading">
+<!-- ══════════════════════════════════════════
+     FEATURES GRID
+══════════════════════════════════════════ -->
+<section class="section section-alt" aria-labelledby="features-heading">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow"><i class="fa-solid fa-triangle-exclamation"></i> <?php esc_html_e('Community Issues', 'neighborhood-connect'); ?></div>
-      <h2 class="section-title" id="issues-heading"><?php esc_html_e('Help Fix Your Neighborhood', 'neighborhood-connect'); ?></h2>
-      <p class="section-description"><?php esc_html_e('Report and track local issues until they\'re resolved. Your voice matters.', 'neighborhood-connect'); ?></p>
+      <div class="section-tag">Why Neighborhood Connect</div>
+      <h2 class="section-title" id="features-heading">Everything Your Community Needs</h2>
+      <p class="section-desc">One platform built for the way real neighborhoods actually work.</p>
+    </div>
+
+    <div class="grid-3">
+      <?php
+      $features = [
+        ['ic'=>'fa-calendar-days', 'color'=>'ic-orange', 'title'=>'Events & RSVPs',     'desc'=>'Create and discover events with RSVP tracking, capacity limits, and iCal export.'],
+        ['ic'=>'fa-briefcase',     'color'=>'ic-teal',   'title'=>'Service Directory',  'desc'=>'Find vetted local plumbers, tutors, gardeners, and more — all reviewed by neighbors.'],
+        ['ic'=>'fa-triangle-exclamation','color'=>'ic-gold','title'=>'Issue Tracker',   'desc'=>'Report potholes, broken lights, and safety hazards. Track them until they\'re fixed.'],
+        ['ic'=>'fa-store',         'color'=>'ic-violet', 'title'=>'Marketplace',        'desc'=>'Buy, sell, or give away goods within walking distance of your home.'],
+        ['ic'=>'fa-map-location-dot','color'=>'ic-red',  'title'=>'Neighborhood Map',   'desc'=>'Interactive map showing events, services, and issues near your address.'],
+        ['ic'=>'fa-bell',          'color'=>'ic-green',  'title'=>'Smart Alerts',       'desc'=>'Get notified about events you care about, issue updates, and neighborhood news.'],
+      ];
+      foreach ($features as $f) :
+      ?>
+      <div class="feature-card">
+        <div class="feature-icon <?php echo esc_attr($f['color']); ?>">
+          <i class="fa-solid <?php echo esc_attr($f['ic']); ?>"></i>
+        </div>
+        <h3 class="feature-title"><?php echo esc_html($f['title']); ?></h3>
+        <p class="feature-desc"><?php echo esc_html($f['desc']); ?></p>
+      </div>
+      <?php endforeach; ?>
+    </div>
+  </div>
+</section>
+
+<!-- ══════════════════════════════════════════
+     COMMUNITY ISSUES
+══════════════════════════════════════════ -->
+<section class="section" aria-labelledby="issues-heading">
+  <div class="container">
+    <div style="display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:var(--s-4);margin-bottom:var(--s-10);">
+      <div>
+        <div class="section-tag" style="margin-bottom:var(--s-3);"><i class="fa-solid fa-triangle-exclamation"></i> Community Issues</div>
+        <h2 class="section-title" id="issues-heading" style="margin-bottom:var(--s-2);">Help Fix Your Neighborhood</h2>
+        <p class="section-desc" style="margin:0;">Report problems and vote on the issues that matter most.</p>
+      </div>
+      <button class="btn btn-primary" data-modal="report-issue-modal">
+        <i class="fa-solid fa-plus"></i> Report an Issue
+      </button>
     </div>
 
     <?php
-    $issues = new WP_Query([
+    $issues_q = new WP_Query([
       'post_type'      => 'nc_issue',
       'posts_per_page' => 4,
       'post_status'    => 'publish',
-      'orderby'        => 'meta_value_num',
+      'orderby'        => 'date',
       'order'          => 'DESC',
-      'meta_key'       => '_nc_votes',
     ]);
     ?>
 
-    <div style="display:flex;flex-direction:column;gap:1rem;margin-bottom:2.5rem;" id="issues-list">
-      <?php if ($issues->have_posts()) : ?>
-        <?php while ($issues->have_posts()) : $issues->the_post(); ?>
-          <?php get_template_part('template-parts/content', 'issue'); ?>
-        <?php endwhile; wp_reset_postdata(); ?>
-      <?php else : ?>
-        <?php nc_render_demo_issues(); ?>
-      <?php endif; ?>
+    <div style="display:flex;flex-direction:column;gap:var(--s-3);">
+      <?php
+      $ii = 0;
+      if ($issues_q->have_posts()) :
+        while ($issues_q->have_posts()) : $issues_q->the_post();
+          $status   = get_post_meta(get_the_ID(), '_nc_status', true) ?: 'open';
+          $votes    = (int) get_post_meta(get_the_ID(), '_nc_votes', true);
+          $location = get_post_meta(get_the_ID(), '_nc_location', true);
+          $user_voted = is_user_logged_in() && in_array(get_current_user_id(), get_post_meta(get_the_ID(), '_nc_voters', true) ?: []);
+          $status_display = str_replace('_', '-', $status); // in_progress → in-progress
+          $pill_class = 'pill-' . $status_display;
+          $status_labels = ['open'=>'Open','in-progress'=>'In Progress','resolved'=>'Resolved'];
+          $ii++;
+      ?>
+      <div class="issue-card">
+        <div class="issue-status status-<?php echo esc_attr($status_display); ?>"></div>
+        <div class="issue-body">
+          <h3 class="issue-title"><a href="<?php the_permalink(); ?>"><?php the_title(); ?></a></h3>
+          <p class="issue-desc"><?php echo esc_html(get_the_excerpt()); ?></p>
+          <div class="issue-foot">
+            <?php if ($location) : ?>
+              <div class="issue-foot-item"><i class="fa-solid fa-location-dot"></i> <?php echo esc_html($location); ?></div>
+            <?php endif; ?>
+            <div class="issue-foot-item"><i class="fa-regular fa-clock"></i> <?php echo esc_html(human_time_diff(get_the_time('U'), current_time('timestamp'))); ?> ago</div>
+            <span class="status-pill <?php echo esc_attr($pill_class); ?>"><?php echo esc_html($status_labels[$status_display] ?? ucfirst(str_replace('-',' ',$status_display))); ?></span>
+            <button class="vote-btn<?php echo $user_voted ? ' voted' : ''; ?>" data-issue-id="<?php echo esc_attr(get_the_ID()); ?>">
+              <i class="fa-solid fa-thumbs-up"></i> <span class="vote-count"><?php echo esc_html($votes); ?></span>
+            </button>
+          </div>
+        </div>
+      </div>
+      <?php endwhile; wp_reset_postdata();
+      endif;
+
+      // Pad with demo issues so the list always shows 4 cards
+      if ($ii < 4) nc_fp_demo_issues(4 - $ii);
+      ?>
     </div>
 
-    <div style="display:flex;gap:1rem;flex-wrap:wrap;justify-content:center;">
-      <a href="<?php echo esc_url(home_url('/issues/')); ?>" class="btn btn-outline">
-        <?php esc_html_e('View All Issues', 'neighborhood-connect'); ?>
+    <div style="text-align:center;margin-top:var(--s-8);">
+      <a href="<?php echo esc_url(home_url('/issues/')); ?>" class="btn btn-ghost">
+        View all issues <i class="fa-solid fa-arrow-right"></i>
       </a>
-      <button class="btn btn-primary" data-modal="report-issue-modal">
-        <i class="fa-solid fa-plus"></i>
-        <?php esc_html_e('Report an Issue', 'neighborhood-connect'); ?>
-      </button>
     </div>
   </div>
 </section>
 
-<!-- Report Issue Modal -->
-<div class="modal-overlay" id="report-issue-modal" role="dialog" aria-modal="true" aria-labelledby="report-issue-title">
-  <div class="modal">
-    <div class="modal-header">
-      <h2 class="modal-title" id="report-issue-title"><?php esc_html_e('Report a Community Issue', 'neighborhood-connect'); ?></h2>
-      <button class="modal-close" aria-label="<?php esc_attr_e('Close', 'neighborhood-connect'); ?>"><i class="fa-solid fa-xmark"></i></button>
-    </div>
-    <div class="modal-body">
-      <?php if (is_user_logged_in()) : ?>
-        <form id="issue-report-form" novalidate>
-          <div class="form-group">
-            <label class="form-label" for="issue-title"><?php esc_html_e('Issue Title', 'neighborhood-connect'); ?> <span class="required">*</span></label>
-            <input type="text" id="issue-title" class="form-control" placeholder="<?php esc_attr_e('e.g., Broken streetlight on Oak St.', 'neighborhood-connect'); ?>" required>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="issue-type"><?php esc_html_e('Issue Type', 'neighborhood-connect'); ?></label>
-            <select id="issue-type" class="form-control">
-              <option value="infrastructure"><?php esc_html_e('Infrastructure', 'neighborhood-connect'); ?></option>
-              <option value="safety"><?php esc_html_e('Safety', 'neighborhood-connect'); ?></option>
-              <option value="environment"><?php esc_html_e('Environment', 'neighborhood-connect'); ?></option>
-              <option value="noise"><?php esc_html_e('Noise', 'neighborhood-connect'); ?></option>
-              <option value="other"><?php esc_html_e('Other', 'neighborhood-connect'); ?></option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="issue-description"><?php esc_html_e('Description', 'neighborhood-connect'); ?></label>
-            <textarea id="issue-description" class="form-control" placeholder="<?php esc_attr_e('Describe the issue in detail...', 'neighborhood-connect'); ?>"></textarea>
-          </div>
-          <div class="form-group">
-            <label class="form-label" for="issue-location"><?php esc_html_e('Location / Address', 'neighborhood-connect'); ?></label>
-            <input type="text" id="issue-location" class="form-control" placeholder="<?php esc_attr_e('Nearest street or landmark', 'neighborhood-connect'); ?>">
-          </div>
-          <?php wp_nonce_field('nc_report_issue', 'nc_issue_nonce'); ?>
-          <button type="submit" class="btn btn-primary btn-full">
-            <i class="fa-solid fa-paper-plane"></i>
-            <?php esc_html_e('Submit Report', 'neighborhood-connect'); ?>
-          </button>
-        </form>
-      <?php else : ?>
-        <div style="text-align:center;padding:2rem 0;">
-          <i class="fa-solid fa-lock" style="font-size:2.5rem;color:var(--color-text-muted);margin-bottom:1rem;display:block;"></i>
-          <p style="margin-bottom:1.5rem;color:var(--color-text-muted);"><?php esc_html_e('You need to be logged in to report an issue.', 'neighborhood-connect'); ?></p>
-          <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="btn btn-primary">
-            <i class="fa-solid fa-right-to-bracket"></i>
-            <?php esc_html_e('Log In to Report', 'neighborhood-connect'); ?>
-          </a>
-        </div>
-      <?php endif; ?>
-    </div>
-  </div>
-</div>
-
-<!-- ============================================================
-     MAP SECTION
-     ============================================================ -->
-<section class="map-section" aria-labelledby="map-heading">
-  <div class="container">
-    <div class="section-header">
-      <div class="section-eyebrow"><i class="fa-solid fa-map-location-dot"></i> <?php esc_html_e('Neighborhood Map', 'neighborhood-connect'); ?></div>
-      <h2 class="section-title" id="map-heading"><?php esc_html_e('See What\'s Around You', 'neighborhood-connect'); ?></h2>
-    </div>
-
-    <div class="map-layout">
-      <div class="map-container">
-        <div class="map-placeholder">
-          <i class="fa-solid fa-map-location-dot"></i>
-          <p style="font-weight:600;"><?php esc_html_e('Interactive Map', 'neighborhood-connect'); ?></p>
-          <p style="font-size:.875rem;"><?php esc_html_e('Add your Google Maps API key in the Customizer to enable the map.', 'neighborhood-connect'); ?></p>
-          <a href="<?php echo esc_url(admin_url('customize.php?autofocus[section]=nc_settings')); ?>" class="btn btn-primary btn-sm">
-            <?php esc_html_e('Configure Map', 'neighborhood-connect'); ?>
-          </a>
-        </div>
-        <div id="nc-map"></div>
-      </div>
-
-      <div class="map-sidebar">
-        <div class="map-legend">
-          <div class="legend-title"><?php esc_html_e('Map Legend', 'neighborhood-connect'); ?></div>
-          <div class="legend-items">
-            <div class="legend-item"><div class="legend-dot" style="background:#2563eb;"></div><?php esc_html_e('Events', 'neighborhood-connect'); ?></div>
-            <div class="legend-item"><div class="legend-dot" style="background:#10b981;"></div><?php esc_html_e('Services', 'neighborhood-connect'); ?></div>
-            <div class="legend-item"><div class="legend-dot" style="background:#ef4444;"></div><?php esc_html_e('Open Issues', 'neighborhood-connect'); ?></div>
-            <div class="legend-item"><div class="legend-dot" style="background:#f59e0b;"></div><?php esc_html_e('In Progress', 'neighborhood-connect'); ?></div>
-            <div class="legend-item"><div class="legend-dot" style="background:#6b7280;"></div><?php esc_html_e('Resolved', 'neighborhood-connect'); ?></div>
-          </div>
-        </div>
-
-        <div class="widget" style="margin:0;">
-          <h3 class="widget-title"><?php esc_html_e('Quick Stats', 'neighborhood-connect'); ?></h3>
-          <div style="display:flex;flex-direction:column;gap:.75rem;">
-            <div style="display:flex;justify-content:space-between;font-size:.875rem;">
-              <span style="color:var(--color-text-muted);"><?php esc_html_e('This week\'s events', 'neighborhood-connect'); ?></span>
-              <strong><?php echo esc_html(wp_count_posts('nc_event')->publish); ?></strong>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-size:.875rem;">
-              <span style="color:var(--color-text-muted);"><?php esc_html_e('Active services', 'neighborhood-connect'); ?></span>
-              <strong><?php echo esc_html(wp_count_posts('nc_service')->publish); ?></strong>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-size:.875rem;">
-              <span style="color:var(--color-text-muted);"><?php esc_html_e('Open issues', 'neighborhood-connect'); ?></span>
-              <strong><?php echo esc_html(wp_count_posts('nc_issue')->publish); ?></strong>
-            </div>
-            <div style="display:flex;justify-content:space-between;font-size:.875rem;">
-              <span style="color:var(--color-text-muted);"><?php esc_html_e('Community members', 'neighborhood-connect'); ?></span>
-              <strong><?php echo esc_html(count_users()['total_users']); ?></strong>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- ============================================================
+<!-- ══════════════════════════════════════════
      TESTIMONIALS
-     ============================================================ -->
-<section class="section section-alt" aria-labelledby="testimonials-heading">
+══════════════════════════════════════════ -->
+<section class="section section-warm" aria-labelledby="testimonials-heading">
   <div class="container">
     <div class="section-header">
-      <div class="section-eyebrow"><?php esc_html_e('What Residents Say', 'neighborhood-connect'); ?></div>
-      <h2 class="section-title" id="testimonials-heading"><?php esc_html_e('Loved by Our Community', 'neighborhood-connect'); ?></h2>
+      <div class="section-tag">Real Stories</div>
+      <h2 class="section-title" id="testimonials-heading">Loved by Residents</h2>
     </div>
 
-    <div class="testimonials-grid">
+    <div class="grid-3">
       <?php
       $testimonials = [
-        ['text' => 'Neighborhood Connect completely changed how I engage with my community. I found out about the block party three hours after it was posted — and made 10 new friends that day!', 'name' => 'Sarah M.', 'role' => 'Resident, Oak Avenue', 'color' => '#2563eb'],
-        ['text' => 'I reported a broken streetlight that had been ignored for months. Within a week of posting it on Neighborhood Connect, the city fixed it. The power of visibility!', 'name' => 'James T.', 'role' => 'Resident, Maple District', 'color' => '#059669'],
-        ['text' => 'As a local plumber, the service directory brought me 12 new clients in my own neighborhood. Better than any advertising I have ever done.', 'name' => 'Mike R.', 'role' => 'Local Plumber', 'color' => '#d97706'],
+        ['stars'=>5,'text'=>'Neighborhood Connect completely changed how I engage with my area. I found out about the block party three hours after it was posted — and made 10 new friends that day!','name'=>'Sarah M.','role'=>'Oak Avenue resident','color'=>'#4f46e5'],
+        ['stars'=>5,'text'=>'I reported a broken streetlight that had been ignored for months. Within a week of posting it here, the council fixed it. The power of community visibility!','name'=>'James T.','role'=>'Maple District resident','color'=>'#0d9488'],
+        ['stars'=>5,'text'=>'As a local plumber, the service directory brought me 12 new clients right in my own neighbourhood. Better than any advertising I have ever tried.','name'=>'Mike R.','role'=>'Local Plumber','color'=>'#f59e0b'],
       ];
       foreach ($testimonials as $t) :
+        $initials = implode('', array_map(fn($w) => strtoupper($w[0]), array_slice(explode(' ', $t['name']), 0, 2)));
       ?>
       <div class="testimonial-card">
+        <div class="testimonial-stars"><?php echo str_repeat('★', $t['stars']); ?></div>
         <p class="testimonial-text">"<?php echo esc_html($t['text']); ?>"</p>
         <div class="testimonial-author">
-          <div class="author-avatar-placeholder" style="background:<?php echo esc_attr($t['color']); ?>;">
-            <?php echo esc_html(nc_avatar_initials($t['name'])); ?>
-          </div>
+          <div class="author-avi" style="background:<?php echo esc_attr($t['color']); ?>;"><?php echo esc_html($initials); ?></div>
           <div>
             <div class="author-name"><?php echo esc_html($t['name']); ?></div>
             <div class="author-role"><?php echo esc_html($t['role']); ?></div>
@@ -497,111 +616,161 @@
   </div>
 </section>
 
-<!-- ============================================================
+<!-- ══════════════════════════════════════════
      CTA
-     ============================================================ -->
+══════════════════════════════════════════ -->
 <section class="cta-section" aria-labelledby="cta-heading">
-  <div class="container">
-    <h2 class="cta-title" id="cta-heading">
-      <?php esc_html_e('Ready to Connect with Your Neighborhood?', 'neighborhood-connect'); ?>
-    </h2>
-    <p class="cta-description">
-      <?php esc_html_e('Join thousands of residents already making their communities stronger, safer, and more connected.', 'neighborhood-connect'); ?>
-    </p>
+  <div class="container cta-inner">
+    <span class="cta-emoji">🏘️</span>
+    <h2 class="cta-title" id="cta-heading">Ready to connect with your neighborhood?</h2>
+    <p class="cta-desc">Join thousands of residents already making their communities stronger, safer, and more connected.</p>
     <div class="cta-actions">
-      <a href="<?php echo esc_url(wp_registration_url()); ?>" class="btn btn-lg" style="background:white;color:var(--color-primary);">
-        <i class="fa-solid fa-user-plus"></i>
-        <?php esc_html_e('Create Free Account', 'neighborhood-connect'); ?>
+      <a href="<?php echo esc_url(wp_registration_url()); ?>" class="btn btn-white btn-xl">
+        <i class="fa-solid fa-user-plus"></i> Create Free Account
       </a>
-      <a href="<?php echo esc_url(home_url('/events/')); ?>" class="btn btn-outline btn-lg" style="border-color:rgba(255,255,255,0.5);color:white;">
-        <?php esc_html_e('Browse Events First', 'neighborhood-connect'); ?>
+      <a href="<?php echo esc_url(home_url('/events/')); ?>" class="btn btn-xl" style="border:2px solid rgba(255,255,255,0.4);color:white;background:rgba(255,255,255,0.1);">
+        Browse Events First
       </a>
     </div>
   </div>
 </section>
 
+<!-- Report Issue Modal -->
+<div class="modal-overlay" id="report-issue-modal" role="dialog" aria-modal="true" aria-labelledby="ri-title">
+  <div class="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="ri-title">Report a Community Issue</span>
+      <button class="modal-close"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <?php if (is_user_logged_in()) : ?>
+        <form id="issue-report-form" novalidate>
+          <div class="form-group">
+            <label class="form-label" for="issue-title">Issue Title <span class="req">*</span></label>
+            <input type="text" id="issue-title" class="form-control" placeholder="e.g. Broken streetlight on Oak St." required>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="issue-type">Type</label>
+            <select id="issue-type" class="form-control">
+              <option>Infrastructure</option><option>Safety</option><option>Environment</option><option>Noise</option><option>Other</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="issue-desc">Description</label>
+            <textarea id="issue-desc" class="form-control" placeholder="Describe the issue in detail…"></textarea>
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="issue-loc">Location</label>
+            <input type="text" id="issue-loc" class="form-control" placeholder="Nearest street or landmark">
+          </div>
+          <?php wp_nonce_field('nc_report_issue','nc_issue_nonce'); ?>
+          <button type="submit" class="btn btn-primary btn-full">
+            <i class="fa-solid fa-paper-plane"></i> Submit Report
+          </button>
+        </form>
+      <?php else : ?>
+        <div style="text-align:center;padding:var(--s-8) 0;">
+          <i class="fa-solid fa-lock" style="font-size:2.5rem;color:var(--c-muted);margin-bottom:var(--s-4);display:block;"></i>
+          <p style="color:var(--c-muted);margin-bottom:var(--s-5);">You need to be logged in to report an issue.</p>
+          <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="btn btn-primary">
+            <i class="fa-solid fa-right-to-bracket"></i> Log In to Report
+          </a>
+        </div>
+      <?php endif; ?>
+    </div>
+  </div>
+</div>
+
 <?php
 
-/* Demo content renderers for fresh installs */
-function nc_render_demo_events() {
-    $demos = [
-        ['title' => 'Community Block Party', 'date' => '2026-05-24', 'location' => 'Park Avenue', 'cat' => 'Social', 'rsvp' => 24, 'icon' => '🎉', 'cat_key' => 'social'],
-        ['title' => 'Farmers Market Saturday', 'date' => '2026-05-25', 'location' => 'Town Square', 'cat' => 'Food', 'rsvp' => 56, 'icon' => '🥦', 'cat_key' => 'food'],
-        ['title' => 'Kids Soccer League', 'date' => '2026-05-27', 'location' => 'Central Park', 'cat' => 'Sports', 'rsvp' => 18, 'icon' => '⚽', 'cat_key' => 'sports'],
-        ['title' => 'Neighborhood Clean-Up', 'date' => '2026-05-31', 'location' => 'Riverside Rd', 'cat' => 'Environment', 'rsvp' => 12, 'icon' => '♻️', 'cat_key' => 'social'],
-        ['title' => 'Art Workshop for Adults', 'date' => '2026-06-02', 'location' => 'Community Hall', 'cat' => 'Arts', 'rsvp' => 9, 'icon' => '🎨', 'cat_key' => 'arts'],
-        ['title' => 'Yoga in the Park', 'date' => '2026-06-05', 'location' => 'Greenfield Park', 'cat' => 'Health', 'rsvp' => 31, 'icon' => '🧘', 'cat_key' => 'health'],
-    ];
-
-    $colors = ['#2563eb','#059669','#d97706','#dc2626','#7c3aed','#db2777'];
-
-    foreach ($demos as $i => $d) {
-        $ts = strtotime($d['date']);
-        $bg = $colors[$i % count($colors)];
-        echo '<div class="event-card" data-category="' . esc_attr($d['cat_key']) . '">';
-        echo '<div class="event-card-image" style="background:' . esc_attr($bg) . ';"><div class="no-image">' . esc_html($d['icon']) . '</div>';
-        echo '<div class="event-card-badge"><span class="badge badge-primary">' . esc_html($d['cat']) . '</span></div>';
-        echo '</div>';
-        echo '<div class="event-card-content">';
-        echo '<div class="event-meta"><div class="event-meta-item"><i class="fa-solid fa-calendar"></i>' . esc_html(date('M d, Y', $ts)) . '</div><div class="event-meta-item"><i class="fa-solid fa-location-dot"></i>' . esc_html($d['location']) . '</div></div>';
-        echo '<h3 class="event-card-title"><a href="#">' . esc_html($d['title']) . '</a></h3>';
-        echo '<p class="event-card-excerpt">A wonderful community event for all residents. Come join us and meet your neighbors!</p>';
-        echo '<div class="event-card-footer"><div class="rsvp-count"><div class="rsvp-avatars">';
-        for ($j = 0; $j < 3; $j++) {
-            echo '<div class="rsvp-avatar" style="background:' . esc_attr($colors[$j]) . ';">' . chr(65 + $j) . '</div>';
-        }
-        echo '</div><span class="rsvp-number">' . esc_html($d['rsvp']) . '</span> going</div>';
-        echo '<button class="rsvp-btn" data-event-id="' . esc_attr($i + 1) . '"><i class="fa-solid fa-plus"></i> RSVP</button>';
-        echo '</div></div></div>';
-    }
+/* ── Demo data helpers ─────────────────────── */
+function nc_fp_demo_events(array $colors, array $emojis, int $limit = 6, int $offset = 0) {
+  $demos = [
+    ['t'=>'Community Block Party','d'=>'2026-05-24','tm'=>'10:00 AM','l'=>'Gulberg III Park, Lahore','cat'=>'community','rsvp'=>24,'desc'=>'A vibrant block party with music, food stalls, and games for the whole family. Meet your neighbours!'],
+    ['t'=>'Saturday Farmers Market','d'=>'2026-05-25','tm'=>'8:00 AM','l'=>'Liberty Market, Lahore','cat'=>'food','rsvp'=>56,'desc'=>'Fresh produce, homemade goods, and local artisans every Saturday morning. Support local!'],
+    ['t'=>'Kids Soccer League','d'=>'2026-05-27','tm'=>'4:00 PM','l'=>'DHA Phase 5, Lahore','cat'=>'sports','rsvp'=>18,'desc'=>'Weekly soccer matches for kids aged 6–14. All skill levels welcome. Bring water!'],
+    ['t'=>'Neighbourhood Clean-Up','d'=>'2026-05-31','tm'=>'9:00 AM','l'=>'Johar Town Park, Lahore','cat'=>'environment','rsvp'=>12,'desc'=>'Help keep our streets clean. Gloves and bags provided. A great way to give back.'],
+    ['t'=>'Art Workshop','d'=>'2026-06-02','tm'=>'2:00 PM','l'=>'NCA Mall Road, Lahore','cat'=>'arts','rsvp'=>9,'desc'=>'An afternoon of painting and sketching. All materials provided. No experience needed!'],
+    ['t'=>'Morning Yoga in the Park','d'=>'2026-06-05','tm'=>'6:30 AM','l'=>'Jilani Park, Lahore','cat'=>'health','rsvp'=>31,'desc'=>'Start your day with refreshing outdoor yoga. All fitness levels. Bring your own mat.'],
+  ];
+  $events_url = esc_url(home_url('/events/'));
+  $demos = array_slice($demos, 0, $limit);
+  foreach ($demos as $i => $d) {
+    $ts  = strtotime($d['d']);
+    $bg  = $colors[($offset + $i) % count($colors)];
+    $ico = $emojis[$d['cat']] ?? '📅';
+    echo '<article class="event-card" data-category="' . esc_attr($d['cat']) . '">';
+    echo '<div class="event-card-img" style="background:linear-gradient(135deg,' . esc_attr($bg) . ',' . esc_attr($bg) . 'cc)">';
+    echo '<div class="placeholder-icon">' . esc_html($ico) . '</div>';
+    echo '<div class="event-date-chip"><div class="date-chip-month">' . esc_html(date('M',$ts)) . '</div><div class="date-chip-day">' . esc_html(date('d',$ts)) . '</div></div>';
+    echo '<div class="event-cat-pill">' . esc_html(ucfirst($d['cat'])) . '</div>';
+    echo '</div>';
+    echo '<div class="event-card-body">';
+    echo '<div class="event-card-meta">';
+    echo '<div class="meta-item"><i class="fa-regular fa-clock"></i> ' . esc_html($d['tm']) . '</div>';
+    echo '<div class="meta-item"><i class="fa-solid fa-location-dot"></i> ' . esc_html($d['l']) . '</div>';
+    echo '</div>';
+    echo '<h3 class="event-card-title"><a href="' . $events_url . '">' . esc_html($d['t']) . '</a></h3>';
+    echo '<p class="event-card-excerpt">' . esc_html($d['desc']) . '</p>';
+    echo '<div class="event-card-foot">';
+    echo '<div class="going-row"><div class="going-faces">';
+    for ($f=0;$f<3;$f++) echo '<div class="going-face" style="background:' . esc_attr($colors[$f % count($colors)]) . ';">' . chr(65+$f) . '</div>';
+    echo '</div><span><strong class="rsvp-number">' . esc_html($d['rsvp']) . '</strong> going</span></div>';
+    echo '<a href="' . $events_url . '" class="rsvp-btn"><i class="fa-solid fa-plus"></i> RSVP</a>';
+    echo '</div></div></article>';
+  }
 }
 
-function nc_render_demo_services() {
-    $demos = [
-        ['name' => 'Ahmed\'s Plumbing', 'cat' => 'Plumbing', 'rating' => 4.9, 'reviews' => 47, 'price' => 'From $60/hr', 'icon' => '🔧'],
-        ['name' => 'Green Thumb Garden', 'cat' => 'Gardening', 'rating' => 4.7, 'reviews' => 32, 'price' => 'From $40/hr', 'icon' => '🌿'],
-        ['name' => 'Sarah\'s Tutoring', 'cat' => 'Education', 'rating' => 5.0, 'reviews' => 18, 'price' => '$35/session', 'icon' => '📚'],
-        ['name' => 'Clean Sweep Co.', 'cat' => 'Cleaning', 'rating' => 4.8, 'reviews' => 63, 'price' => 'From $80/visit', 'icon' => '✨'],
-        ['name' => 'Tech Help Hub', 'cat' => 'IT Support', 'rating' => 4.6, 'reviews' => 25, 'price' => '$50/hr', 'icon' => '💻'],
-        ['name' => 'Paws & Claws', 'cat' => 'Pet Care', 'rating' => 4.9, 'reviews' => 41, 'price' => '$25/walk', 'icon' => '🐾'],
-    ];
-    $colors = ['#2563eb','#059669','#d97706','#dc2626','#7c3aed','#db2777'];
-
-    foreach ($demos as $i => $d) {
-        echo '<div class="service-card">';
-        echo '<div class="service-card-header">';
-        echo '<div class="service-avatar-placeholder" style="background:' . esc_attr($colors[$i % count($colors)]) . ';">' . esc_html($d['icon']) . '</div>';
-        echo '<div class="service-info"><div class="service-name"><a href="#">' . esc_html($d['name']) . '</a></div><div class="service-category">' . esc_html($d['cat']) . '</div></div>';
-        echo '</div>';
-        echo '<div class="service-rating">' . nc_star_rating($d['rating']) . '<span>' . esc_html($d['rating']) . ' (' . esc_html($d['reviews']) . ' reviews)</span></div>';
-        echo '<p class="service-description">Professional, reliable, and trusted by ' . esc_html($d['reviews']) . ' neighbors. Available for bookings in your area.</p>';
-        echo '<div class="service-footer"><span class="service-price">' . esc_html($d['price']) . '</span><a href="#" class="btn btn-primary btn-sm">Book Now</a></div>';
-        echo '</div>';
-    }
+function nc_fp_demo_services(array $colors, int $limit = 6, int $offset = 0) {
+  $demos = [
+    ['n'=>'Ahmeds Plumbing','cat'=>'Plumbing','r'=>4.9,'rv'=>47,'p'=>'From $60/hr','i'=>'🔧'],
+    ['n'=>'Green Thumb Garden','cat'=>'Gardening','r'=>4.7,'rv'=>32,'p'=>'From $40/hr','i'=>'🌿'],
+    ['n'=>'Sarahs Tutoring','cat'=>'Education','r'=>5.0,'rv'=>18,'p'=>'$35/session','i'=>'📚'],
+    ['n'=>'Clean Sweep Co.','cat'=>'Cleaning','r'=>4.8,'rv'=>63,'p'=>'From $80/visit','i'=>'✨'],
+    ['n'=>'TechHelp Hub','cat'=>'IT Support','r'=>4.6,'rv'=>25,'p'=>'$50/hr','i'=>'💻'],
+    ['n'=>'Paws and Claws','cat'=>'Pet Care','r'=>4.9,'rv'=>41,'p'=>'$25/walk','i'=>'🐾'],
+  ];
+  $services_url = esc_url(home_url('/services/'));
+  $demos = array_slice($demos, 0, $limit);
+  foreach ($demos as $i => $d) {
+    $bg  = $colors[($offset + $i) % count($colors)];
+    $stars = str_repeat('★', round($d['r'])) . str_repeat('☆', 5-round($d['r']));
+    echo '<div class="service-card">';
+    echo '<div class="service-card-top">';
+    echo '<div class="service-avatar-placeholder" style="background:' . esc_attr($bg) . ';">' . esc_html($d['i']) . '</div>';
+    echo '<div class="service-info"><div class="service-name"><a href="' . $services_url . '">' . esc_html($d['n']) . '</a></div><div class="service-cat">' . esc_html($d['cat']) . '</div></div>';
+    echo '</div>';
+    echo '<div class="service-rating"><span class="stars">' . $stars . '</span><span>' . esc_html($d['r']) . '</span><span>(' . esc_html($d['rv']) . ' reviews)</span></div>';
+    echo '<p class="service-desc">Professional, reliable, and trusted by ' . esc_html($d['rv']) . ' neighbours in your area.</p>';
+    echo '<div class="service-foot"><div class="service-price">' . esc_html($d['p']) . '</div><a href="' . $services_url . '" class="btn btn-secondary btn-sm">Contact</a></div>';
+    echo '</div>';
+  }
 }
 
-function nc_render_demo_issues() {
-    $demos = [
-        ['title' => 'Broken Streetlight — Oak & 5th', 'desc' => 'The streetlight at Oak Ave & 5th St has been out for 3 weeks. Safety hazard at night.', 'status' => 'open', 'votes' => 23, 'location' => 'Oak Ave & 5th St'],
-        ['title' => 'Pothole on Riverside Road', 'desc' => 'Large pothole causing damage to vehicles. Multiple residents have reported flat tyres.', 'status' => 'in-progress', 'votes' => 18, 'location' => 'Riverside Rd'],
-        ['title' => 'Overflowing Rubbish Bin at Park Entrance', 'desc' => 'Bin at main park entrance has not been emptied in 10 days. Attracting pests.', 'status' => 'open', 'votes' => 11, 'location' => 'Central Park'],
-        ['title' => 'Speed Bump Needed Near School', 'desc' => 'Cars speeding near the primary school on Elm Street — children at risk.', 'status' => 'resolved', 'votes' => 47, 'location' => 'Elm Street'],
-    ];
-
-    foreach ($demos as $i => $d) {
-        $status_class = 'status-' . str_replace('-', '-', $d['status']);
-        $status_label = ucwords(str_replace('-', ' ', $d['status']));
-        echo '<div class="issue-card">';
-        echo '<div class="issue-status-dot ' . esc_attr($status_class) . '"></div>';
-        echo '<div class="issue-content">';
-        echo '<h3 class="issue-title"><a href="#">' . esc_html($d['title']) . '</a></h3>';
-        echo '<p class="issue-description">' . esc_html($d['desc']) . '</p>';
-        echo '<div class="issue-footer">';
-        echo '<span><i class="fa-solid fa-location-dot"></i>' . esc_html($d['location']) . '</span>';
-        echo '<span class="badge ' . ($d['status'] === 'resolved' ? 'badge-success' : ($d['status'] === 'in-progress' ? 'badge-warning' : 'badge-danger')) . '">' . esc_html($status_label) . '</span>';
-        echo '<button class="vote-btn" data-issue-id="' . esc_attr($i + 1) . '"><i class="fa-solid fa-thumbs-up"></i><span class="vote-count">' . esc_html($d['votes']) . '</span></button>';
-        echo '</div></div></div>';
-    }
+function nc_fp_demo_issues(int $limit = 4) {
+  $demos = [
+    ['t'=>'Broken Streetlight — Main Boulevard','d'=>'The streetlight has been out for 3 weeks, creating a safety hazard for pedestrians at night.','s'=>'open','v'=>23,'l'=>'Main Blvd & 5th, Gulberg','ago'=>'2 days'],
+    ['t'=>'Large Pothole on Canal Road','d'=>'Has caused multiple flat tyres. Reported to council weeks ago but no action taken yet.','s'=>'in-progress','v'=>18,'l'=>'Canal Rd near Doctors Hospital','ago'=>'5 days'],
+    ['t'=>'Overflowing Bin at Park Entrance','d'=>'Not emptied in 10 days. Attracting pests and creating an unsanitary mess at the main gate.','s'=>'open','v'=>11,'l'=>'Jilani Park, Lahore','ago'=>'3 days'],
+    ['t'=>'Speed Bump Needed Near School','d'=>'Cars speeding past primary school during pick-up time. Multiple near misses reported.','s'=>'resolved','v'=>47,'l'=>'Beaconhouse School, DHA','ago'=>'1 week'],
+  ];
+  $pl = ['open'=>'pill-open','in-progress'=>'pill-in-progress','resolved'=>'pill-resolved'];
+  $sl = ['open'=>'Open','in-progress'=>'In Progress','resolved'=>'Resolved'];
+  $issues_url = esc_url(home_url('/issues/'));
+  $demos = array_slice($demos, 0, $limit);
+  foreach ($demos as $i => $d) {
+    echo '<div class="issue-card">';
+    echo '<div class="issue-status status-' . esc_attr($d['s']) . '"></div>';
+    echo '<div class="issue-body">';
+    echo '<h3 class="issue-title"><a href="' . $issues_url . '">' . esc_html($d['t']) . '</a></h3>';
+    echo '<p class="issue-desc">' . esc_html($d['d']) . '</p>';
+    echo '<div class="issue-foot">';
+    echo '<div class="issue-foot-item"><i class="fa-solid fa-location-dot"></i> ' . esc_html($d['l']) . '</div>';
+    echo '<div class="issue-foot-item"><i class="fa-regular fa-clock"></i> ' . esc_html($d['ago']) . ' ago</div>';
+    echo '<span class="status-pill ' . esc_attr($pl[$d['s']]) . '">' . esc_html($sl[$d['s']]) . '</span>';
+    echo '<button class="vote-btn" data-issue-id="' . esc_attr($i+1) . '"><i class="fa-solid fa-thumbs-up"></i> <span class="vote-count">' . esc_html($d['v']) . '</span></button>';
+    echo '</div></div></div>';
+  }
 }
 ?>
 

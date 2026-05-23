@@ -193,6 +193,12 @@ function nc_rest_get_events(WP_REST_Request $req) {
         'orderby'        => 'meta_value',
         'order'          => 'ASC',
         'meta_key'       => '_nc_event_date',
+        'meta_query'     => [[
+            'key'     => '_nc_event_date',
+            'value'   => current_time('Y-m-d'),
+            'compare' => '>=',
+            'type'    => 'DATE',
+        ]],
     ];
 
     $q = new WP_Query($args);
@@ -442,11 +448,17 @@ function nc_customize(WP_Customize_Manager $wp_customize) {
     ]);
 
     $settings = [
-        'nc_hero_title'       => ['default' => 'Lahore Ka Apna Digital Mohalla', 'label' => 'Hero Title'],
-        'nc_hero_description' => ['default' => 'Discover events, find local services, report civic issues, and connect with your neighbors across Lahore — all in one place.', 'label' => 'Hero Description', 'type' => 'textarea'],
-        'nc_neighborhood'     => ['default' => 'Lahore', 'label' => 'Neighborhood Name'],
-        'nc_google_maps_key'  => ['default' => '', 'label' => 'Google Maps API Key'],
-        'nc_footer_tagline'   => ['default' => 'Building stronger, more connected communities across Lahore — one neighborhood at a time.', 'label' => 'Footer Tagline', 'type' => 'textarea'],
+        'nc_hero_title'        => ['default' => 'Canal View Society, online.', 'label' => 'Hero Title'],
+        'nc_hero_description'  => ['default' => 'Book in-society services, RSVP to community events, report issues, and discover everything around Canal View — all in one place.', 'label' => 'Hero Description', 'type' => 'textarea'],
+        'nc_neighborhood'      => ['default' => 'Canal View Society', 'label' => 'Society Name'],
+        'nc_google_maps_key'   => ['default' => '', 'label' => 'Google Maps API Key'],
+        'nc_footer_tagline'    => ['default' => 'Built for the residents of Canal View Cooperative Housing Society, Lahore.', 'label' => 'Footer Tagline', 'type' => 'textarea'],
+        'nc_society_tagline'   => ['default' => 'A walkable, well-connected residential community along the BRB Canal in Lahore.', 'label' => 'Society Tagline', 'type' => 'textarea'],
+        'nc_society_founded'   => ['default' => '1986',        'label' => 'Founded (year)'],
+        'nc_society_units'     => ['default' => '1,200+',      'label' => 'Total Plots / Units'],
+        'nc_society_residents' => ['default' => '5,400+',      'label' => 'Total Residents'],
+        'nc_society_area'      => ['default' => '450+ kanals', 'label' => 'Total Area'],
+        'nc_society_blocks'    => ['default' => 'Phase 1 · Phase 2 · Block A · Block B · Block C', 'label' => 'Blocks / Phases'],
     ];
 
     foreach ($settings as $id => $config) {
@@ -535,10 +547,10 @@ add_filter('login_url', function ($url, $redirect) {
     return $url;
 }, 10, 2);
 
-add_filter('register_url', function () {
+add_filter('register_url', function ($url) {
     $page = get_page_by_path('register');
-    return $page ? get_permalink($page->ID) : wp_registration_url();
-});
+    return $page ? get_permalink($page->ID) : $url;
+}, 10, 1);
 
 /* ============================================================
    AJAX: Login
@@ -658,6 +670,73 @@ function nc_ajax_report_issue() {
     update_post_meta($id, '_nc_votes', 0);
 
     wp_send_json_success(['id' => $id, 'url' => get_permalink($id)]);
+}
+
+/* ============================================================
+   AJAX: Submit Service Request (society in-house wizard)
+   ============================================================ */
+add_action('wp_ajax_nopriv_nc_submit_service_request', function () {
+    wp_send_json_error(['message' => 'Please log in to request a service.', 'redirect' => home_url('/login/')], 401);
+});
+add_action('wp_ajax_nc_submit_service_request', 'nc_ajax_submit_service_request');
+function nc_ajax_submit_service_request() {
+    if (!check_ajax_referer('nc_nonce', 'nonce', false)) {
+        wp_send_json_error(['message' => 'Security check failed.'], 403);
+    }
+
+    $service_id = absint($_POST['service_id'] ?? 0);
+    $sub        = sanitize_text_field($_POST['sub_service'] ?? '');
+    $desc       = sanitize_textarea_field($_POST['description'] ?? '');
+    $flat       = sanitize_text_field($_POST['flat'] ?? '');
+    $phone      = sanitize_text_field($_POST['phone'] ?? '');
+    $time_pref  = sanitize_text_field($_POST['preferred_time'] ?? '');
+    $urgency    = sanitize_text_field($_POST['urgency'] ?? 'normal');
+
+    if (!in_array($urgency, ['low', 'normal', 'urgent'], true)) $urgency = 'normal';
+
+    $service = get_post($service_id);
+    if (!$service || $service->post_type !== 'nc_service') {
+        wp_send_json_error(['message' => 'Please pick a service category.']);
+    }
+    if (!$flat) {
+        wp_send_json_error(['message' => 'Please enter your flat / unit number so the team can find you.']);
+    }
+
+    $cat_slug = get_post_meta($service_id, '_nc_service_slug', true) ?: sanitize_title($service->post_title);
+    $assigned = nc_pick_team_member($cat_slug);
+
+    $title = sprintf('%s — %s · Flat %s', $service->post_title, $sub ?: 'general', $flat);
+    $req_id = wp_insert_post([
+        'post_title'   => $title,
+        'post_content' => $desc,
+        'post_status'  => 'publish',
+        'post_type'    => 'nc_service_request',
+        'post_author'  => get_current_user_id(),
+    ]);
+    if (is_wp_error($req_id)) wp_send_json_error(['message' => 'Could not create your request. Please try again.']);
+
+    update_post_meta($req_id, '_nc_sr_service_id',     $service_id);
+    update_post_meta($req_id, '_nc_sr_service_slug',   $cat_slug);
+    update_post_meta($req_id, '_nc_sr_subservice',     $sub);
+    update_post_meta($req_id, '_nc_sr_flat',           $flat);
+    update_post_meta($req_id, '_nc_sr_phone',          $phone);
+    update_post_meta($req_id, '_nc_sr_preferred_time', $time_pref);
+    update_post_meta($req_id, '_nc_sr_urgency',        $urgency);
+    update_post_meta($req_id, '_nc_sr_assigned_to',    $assigned);
+    update_post_meta($req_id, '_nc_sr_status',         $assigned ? 'assigned' : 'pending');
+
+    $assigned_user = $assigned ? get_userdata($assigned) : null;
+
+    wp_send_json_success([
+        'request_id'    => $req_id,
+        'reference'     => sprintf('SR-%04d', $req_id),
+        'status'        => $assigned ? 'assigned' : 'pending',
+        'service'       => $service->post_title,
+        'sub_service'   => $sub,
+        'assigned_name' => $assigned_user ? $assigned_user->display_name : null,
+        'assigned_phone'=> $assigned_user ? get_user_meta($assigned, '_nc_team_phone', true) : null,
+        'urgency'       => $urgency,
+    ]);
 }
 
 /* ============================================================

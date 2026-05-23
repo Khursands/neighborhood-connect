@@ -17,7 +17,7 @@ $member_count  = (int) count_users()['total_users'];
       <div class="section-tag"><i class="fa-solid fa-newspaper"></i> Community</div>
       <h1 class="section-title" id="community-heading">
         <?php
-        if (is_home())          esc_html_e('Community News & Stories', 'neighborhood-connect');
+        if (is_home())          esc_html_e('Canal View Society — Notice Board', 'neighborhood-connect');
         elseif (is_category())  single_cat_title();
         elseif (is_tag())       printf(esc_html__('Tag: %s', 'neighborhood-connect'), single_tag_title('', false));
         elseif (is_author())    printf(esc_html__('Author: %s', 'neighborhood-connect'), get_the_author());
@@ -26,7 +26,7 @@ $member_count  = (int) count_users()['total_users'];
         ?>
       </h1>
       <p class="section-desc">
-        Stories, updates, and conversations from your neighbours. Stay in the loop with what's happening around you.
+        Official notices, announcements and updates from the Canal View Society management office.
       </p>
     </div>
 
@@ -145,9 +145,9 @@ $member_count  = (int) count_users()['total_users'];
     <div class="grid-3">
       <?php
       $explore = [
-        ['ic'=>'fa-calendar-days','color'=>'ic-orange','title'=>'Upcoming Events','desc'=>'Browse local events you can RSVP to this week.','url'=>home_url('/events/'),'label'=>'Browse Events'],
-        ['ic'=>'fa-briefcase','color'=>'ic-teal','title'=>'Local Services','desc'=>'Find trusted plumbers, tutors, gardeners, and more.','url'=>home_url('/services/'),'label'=>'Find Services'],
-        ['ic'=>'fa-triangle-exclamation','color'=>'ic-gold','title'=>'Report an Issue','desc'=>'Spot a pothole or broken streetlight? Report it.','url'=>home_url('/issues/'),'label'=>'View Issues'],
+        ['ic'=>'fa-calendar-days','color'=>'ic-orange','title'=>'Upcoming Events','desc'=>'See what the society has planned this week — bazaars, sports leagues, workshops.','url'=>home_url('/events/'),'label'=>'Browse Events'],
+        ['ic'=>'fa-screwdriver-wrench','color'=>'ic-teal','title'=>'In-House Services','desc'=>'Request the society plumber, electrician, cleaner, tiffin or grocery team.','url'=>home_url('/services/'),'label'=>'Request a Service'],
+        ['ic'=>'fa-triangle-exclamation','color'=>'ic-gold','title'=>'Report an Issue','desc'=>'Spot a broken streetlight, pothole, or safety concern? Report it to the society.','url'=>home_url('/issues/'),'label'=>'View Issues'],
       ];
       foreach ($explore as $e) :
       ?>
@@ -173,12 +173,12 @@ $member_count  = (int) count_users()['total_users'];
 /* ── Demo posts (shown when there are no real blog posts yet) ── */
 function nc_index_demo_posts(array $colors, int $limit = 6, int $offset = 0) {
   $demos = [
-    ['t'=>'Welcome to the Neighbourhood Connect Community','cat'=>'Announcements','auth'=>'Admin','ago'=>'2 days ago','c'=>14,'icon'=>'👋','ex'=>'A warm welcome to all our new members! Here\'s what you can do on the platform — RSVP to events, hire local services, and report community issues.'],
-    ['t'=>'Spring Festival Recap — A Huge Success!','cat'=>'Events','auth'=>'Sarah M.','ago'=>'4 days ago','c'=>23,'icon'=>'🎉','ex'=>'Over 300 neighbours came together at the Gulberg III Spring Festival last weekend. Photos, highlights, and what we learned for next year.'],
-    ['t'=>'Local Hero: How Ahmed Fixed Our Street','cat'=>'Stories','auth'=>'Community','ago'=>'1 week ago','c'=>41,'icon'=>'⭐','ex'=>'After months of complaints about flooding, Ahmed from Liberty Market organised neighbours to clean the drains. Here is his story.'],
-    ['t'=>'New Recycling Drop-Off Points Coming Soon','cat'=>'Environment','auth'=>'Green Team','ago'=>'1 week ago','c'=>9,'icon'=>'♻️','ex'=>'The municipal council has approved three new recycling stations across the neighbourhood. Locations, hours, and what they accept inside.'],
-    ['t'=>'Safety Tips for Late-Night Walks','cat'=>'Safety','auth'=>'Neighbourhood Watch','ago'=>'2 weeks ago','c'=>17,'icon'=>'🛡️','ex'=>'With shorter days approaching, here are eight practical tips to stay safe when walking around the neighbourhood after dark.'],
-    ['t'=>'Saturday Bazaar — Vendor Sign-Ups Open','cat'=>'Marketplace','auth'=>'Market Team','ago'=>'2 weeks ago','c'=>6,'icon'=>'🛍️','ex'=>'Want to sell at the weekly Saturday Bazaar at Liberty Market? Applications are now open for the next quarter. Details and how to apply.'],
+    ['t'=>'Welcome to the Canal View Society App','cat'=>'Announcements','auth'=>'Management Office','ago'=>'2 days ago','c'=>14,'icon'=>'👋','ex'=>'A warm welcome from the society office. Use the app to RSVP to community events, request the in-house service team, report issues, and browse nearby amenities.'],
+    ['t'=>'Maintenance Charges — June Schedule','cat'=>'Notices','auth'=>'Accounts Desk','ago'=>'4 days ago','c'=>11,'icon'=>'🧾','ex'=>'June maintenance challans are now uploaded against each plot. Please clear dues by the 10th. Late fee waiver for residents on auto-debit.'],
+    ['t'=>'AGM 2026 — Date Confirmed','cat'=>'Notices','auth'=>'General Secretary','ago'=>'1 week ago','c'=>23,'icon'=>'📅','ex'=>'The Annual General Meeting will be held on Sunday, 28 June 2026 at the Phase 1 Community Lawn. Agenda and proxy forms attached.'],
+    ['t'=>'Canal Bank Walking Track — Resurfacing','cat'=>'Maintenance','auth'=>'Maintenance Desk','ago'=>'1 week ago','c'=>9,'icon'=>'🚧','ex'=>'The walking track between Phase 1 Gate and the Ladies Park entrance will be resurfaced 1–3 June. Use the inner-street loop in the meantime.'],
+    ['t'=>'New Speed Bumps Near Allied School','cat'=>'Safety','auth'=>'Society Security','ago'=>'2 weeks ago','c'=>17,'icon'=>'🛡️','ex'=>'Two new speed bumps installed on the road outside Allied School Canal Campus. Residents please drive slowly during pick-up hours (1:45–2:15 PM).'],
+    ['t'=>'Sunday Bachat Bazaar — Vendor Sign-Ups Open','cat'=>'Community','auth'=>'Welfare Committee','ago'=>'2 weeks ago','c'=>6,'icon'=>'🛍️','ex'=>'Residents who want to sell tiffin, baked goods or home produce at the weekly Sunday bazaar can sign up at the management office. Free stall for the first month.'],
   ];
   $demos = array_slice($demos, 0, $limit);
   foreach ($demos as $i => $d) {

@@ -31,7 +31,7 @@
         <li><a href="<?php echo esc_url(home_url('/events/')); ?>"><i class="fa-solid fa-calendar-days" style="width:16px;color:var(--c-primary);"></i> <span data-i18n="nav-events"><?php esc_html_e('Events', 'neighborhood-connect'); ?></span></a></li>
         <li><a href="<?php echo esc_url(home_url('/services/')); ?>"><i class="fa-solid fa-briefcase" style="width:16px;color:var(--c-primary);"></i> <span data-i18n="nav-services"><?php esc_html_e('Services', 'neighborhood-connect'); ?></span></a></li>
         <li><a href="<?php echo esc_url(home_url('/issues/')); ?>"><i class="fa-solid fa-triangle-exclamation" style="width:16px;color:var(--c-primary);"></i> <span data-i18n="nav-issues"><?php esc_html_e('Issues', 'neighborhood-connect'); ?></span></a></li>
-        <li><a href="<?php echo esc_url(home_url('/blog/')); ?>"><i class="fa-solid fa-newspaper" style="width:16px;color:var(--c-primary);"></i> <span data-i18n="nav-community"><?php esc_html_e('Community', 'neighborhood-connect'); ?></span></a></li>
+        <li><a href="<?php echo esc_url(home_url('/amenities/')); ?>"><i class="fa-solid fa-map-location-dot" style="width:16px;color:var(--c-primary);"></i> <span data-i18n="nav-neighborhood"><?php esc_html_e('Neighborhood', 'neighborhood-connect'); ?></span></a></li>
       </ul>
     </nav>
 
@@ -62,7 +62,7 @@
           <li><a href="<?php echo esc_url(home_url('/events/')); ?>"><i class="fa-solid fa-calendar-days nav-icon"></i><span data-i18n="nav-events"> Events</span></a></li>
           <li><a href="<?php echo esc_url(home_url('/services/')); ?>"><i class="fa-solid fa-briefcase nav-icon"></i><span data-i18n="nav-services"> Services</span></a></li>
           <li><a href="<?php echo esc_url(home_url('/issues/')); ?>"><i class="fa-solid fa-triangle-exclamation nav-icon"></i><span data-i18n="nav-issues"> Issues</span></a></li>
-          <li><a href="<?php echo esc_url(home_url('/blog/')); ?>"><i class="fa-solid fa-newspaper nav-icon"></i><span data-i18n="nav-community"> Community</span></a></li>
+          <li><a href="<?php echo esc_url(home_url('/amenities/')); ?>"><i class="fa-solid fa-map-location-dot nav-icon"></i><span data-i18n="nav-neighborhood"> Neighborhood</span></a></li>
         </ul>
       </nav>
 

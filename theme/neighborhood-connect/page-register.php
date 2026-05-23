@@ -18,21 +18,21 @@ get_header();
         <span class="logo-mark"><i class="fa-solid fa-house-chimney"></i></span>
         <span><?php echo esc_html(get_theme_mod('nc_neighborhood', 'Neighborhood')); ?> <em>Connect</em></span>
       </a>
-      <h1 class="auth-brand-headline">Join your neighborhood community</h1>
-      <p class="auth-brand-sub">Connect with thousands of neighbors, discover local events, and make your community a better place to live.</p>
+      <h1 class="auth-brand-headline">Join the Canal View Society app</h1>
+      <p class="auth-brand-sub">Book in-society services, RSVP to community events, report issues, and find every school, pharmacy and ATM around the society — in one place.</p>
 
       <div class="auth-stats-row">
         <div class="auth-stat">
-          <strong>2,400+</strong>
+          <strong>5,400+</strong>
           <span>Residents</span>
         </div>
         <div class="auth-stat">
-          <strong>120+</strong>
-          <span>Events / year</span>
+          <strong>10</strong>
+          <span>On-call service teams</span>
         </div>
         <div class="auth-stat">
-          <strong>85+</strong>
-          <span>Local services</span>
+          <strong>37</strong>
+          <span>Nearby amenities mapped</span>
         </div>
       </div>
 
@@ -40,22 +40,22 @@ get_header();
         <div class="auth-feature-item">
           <div class="auth-feature-icon"><i class="fa-solid fa-users"></i></div>
           <div>
-            <strong>Meet Your Neighbors</strong>
-            <span>Build real connections in your community</span>
+            <strong>One App, Whole Society</strong>
+            <span>Service requests, events, issues — without WhatsApp chaos</span>
           </div>
         </div>
         <div class="auth-feature-item">
           <div class="auth-feature-icon"><i class="fa-solid fa-bell"></i></div>
           <div>
-            <strong>Stay Informed</strong>
-            <span>Get alerts for issues and upcoming events</span>
+            <strong>Real-Time Updates</strong>
+            <span>Maintenance, security and AGM notices straight to your phone</span>
           </div>
         </div>
         <div class="auth-feature-item">
           <div class="auth-feature-icon"><i class="fa-solid fa-shield-halved"></i></div>
           <div>
-            <strong>Safe &amp; Private</strong>
-            <span>Only neighbors see your profile</span>
+            <strong>Residents Only</strong>
+            <span>Verified Canal View residents — your data stays inside the society</span>
           </div>
         </div>
       </div>

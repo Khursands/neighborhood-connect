@@ -23,15 +23,15 @@ $member_count  = (int) count_users()['total_users'];
 
         <div class="hero-pill">
           <span class="hero-pill-dot"><i class="fa-solid fa-location-dot" style="font-size:9px;"></i></span>
-          <?php echo esc_html(get_theme_mod('nc_neighborhood', 'Downtown Community')); ?>
+          <?php echo esc_html(get_theme_mod('nc_neighborhood', 'Canal View Society')); ?>
         </div>
 
         <h1 class="hero-heading" id="hero-heading">
-          The heart of<br>your <span class="line-accent">neighborhood</span><br>is right here.
+          <?php echo esc_html(get_theme_mod('nc_neighborhood', 'Canal View Society')); ?>,<br><span class="line-accent">online</span>.
         </h1>
 
         <p class="hero-sub">
-          <?php echo esc_html(get_theme_mod('nc_hero_description', 'Discover local events, find trusted services, report issues, and connect with the people who live where you do.')); ?>
+          <?php echo esc_html(get_theme_mod('nc_hero_description', 'Book in-society services, RSVP to community events, report issues, and discover everything around Canal View — all in one place.')); ?>
         </p>
 
         <div class="hero-actions">
@@ -81,9 +81,9 @@ $member_count  = (int) count_users()['total_users'];
       <!-- Right: Visual card -->
       <div class="hero-visual" aria-hidden="true">
 
-        <div class="hero-float-badge">
+        <!-- <div class="hero-float-badge">
           <i class="fa-solid fa-circle" style="font-size:7px;"></i> Live in your area
-        </div>
+        </div> -->
 
         <div class="hero-float-card">
           <div class="hero-card-top">
@@ -103,7 +103,13 @@ $member_count  = (int) count_users()['total_users'];
             'post_status'    => 'publish',
             'meta_key'       => '_nc_event_date',
             'orderby'        => 'meta_value',
-            'order'          => 'ASC',
+            'order'           => 'ASC',
+            'meta_query'     => [[
+              'key'     => '_nc_event_date',
+              'value'   => current_time('Y-m-d'),
+              'compare' => '>=',
+              'type'    => 'DATE',
+            ]],
           ]);
           ?>
 
@@ -155,7 +161,7 @@ $member_count  = (int) count_users()['total_users'];
           </div>
           <div>
             <div style="font-size:11px;">New issue reported</div>
-            <div style="font-size:10px;color:var(--c-muted);font-weight:400;">Riverside Road</div>
+            <div style="font-size:10px;color:var(--c-muted);font-weight:400;">Canal Bank Road</div>
           </div>
         </div>
 
@@ -272,9 +278,15 @@ $member_count  = (int) count_users()['total_users'];
       'meta_key'       => '_nc_event_date',
       'orderby'        => 'meta_value',
       'order'          => 'ASC',
+      'meta_query'     => [[
+        'key'     => '_nc_event_date',
+        'value'   => current_time('Y-m-d'),
+        'compare' => '>=',
+        'type'    => 'DATE',
+      ]],
     ]);
 
-    // If no events have a date meta yet, fetch any published events
+    // If no upcoming events yet, fall back to any published events so the grid isn't empty
     if (!$events_q->have_posts()) {
       $events_q = new WP_Query([
         'post_type'      => 'nc_event',
@@ -408,8 +420,8 @@ $member_count  = (int) count_users()['total_users'];
   <div class="container">
     <div class="section-header">
       <div class="section-tag"><i class="fa-solid fa-briefcase"></i> Local Services</div>
-      <h2 class="section-title" id="services-heading">Trusted by Your Neighbors</h2>
-      <p class="section-desc">Every service provider is a real person from your community, verified and reviewed by neighbors.</p>
+      <h2 class="section-title" id="services-heading">Society Services On Demand</h2>
+      <p class="section-desc">In-house teams for plumbing, electrical, cleaning, pest control, tiffin, groceries and more. Request one — the society dispatches a team member to your door.</p>
     </div>
 
     <?php
@@ -487,7 +499,7 @@ $member_count  = (int) count_users()['total_users'];
       <?php
       $features = [
         ['ic'=>'fa-calendar-days', 'color'=>'ic-orange', 'title'=>'Events & RSVPs',     'desc'=>'Create and discover events with RSVP tracking, capacity limits, and iCal export.'],
-        ['ic'=>'fa-briefcase',     'color'=>'ic-teal',   'title'=>'Service Directory',  'desc'=>'Find vetted local plumbers, tutors, gardeners, and more — all reviewed by neighbors.'],
+        ['ic'=>'fa-screwdriver-wrench','color'=>'ic-teal','title'=>'In-House Services','desc'=>'Plumber, electrician, cleaner, tiffin, groceries — the society dispatches a verified team member to your door.'],
         ['ic'=>'fa-triangle-exclamation','color'=>'ic-gold','title'=>'Issue Tracker',   'desc'=>'Report potholes, broken lights, and safety hazards. Track them until they\'re fixed.'],
         ['ic'=>'fa-store',         'color'=>'ic-violet', 'title'=>'Marketplace',        'desc'=>'Buy, sell, or give away goods within walking distance of your home.'],
         ['ic'=>'fa-map-location-dot','color'=>'ic-red',  'title'=>'Neighborhood Map',   'desc'=>'Interactive map showing events, services, and issues near your address.'],
@@ -593,9 +605,9 @@ $member_count  = (int) count_users()['total_users'];
     <div class="grid-3">
       <?php
       $testimonials = [
-        ['stars'=>5,'text'=>'Neighborhood Connect completely changed how I engage with my area. I found out about the block party three hours after it was posted — and made 10 new friends that day!','name'=>'Sarah M.','role'=>'Oak Avenue resident','color'=>'#4f46e5'],
-        ['stars'=>5,'text'=>'I reported a broken streetlight that had been ignored for months. Within a week of posting it here, the council fixed it. The power of community visibility!','name'=>'James T.','role'=>'Maple District resident','color'=>'#0d9488'],
-        ['stars'=>5,'text'=>'As a local plumber, the service directory brought me 12 new clients right in my own neighbourhood. Better than any advertising I have ever tried.','name'=>'Mike R.','role'=>'Local Plumber','color'=>'#f59e0b'],
+        ['stars'=>5,'text'=>'Booked a plumber through the app at 9 PM — Bilal called me back within 20 minutes and fixed the kitchen leak the next morning. Felt like the society actually works for us now.','name'=>'Saima A.','role'=>'Phase 1, House 224','color'=>'#4f46e5'],
+        ['stars'=>5,'text'=>'I reported a broken streetlight on Canal Bank Road that had been out for weeks. Three days later it was fixed and the status updated to Resolved on the app. Finally.','name'=>'Imran R.','role'=>'Block B resident','color'=>'#0d9488'],
+        ['stars'=>5,'text'=>'The amenities page is brilliant — I just moved into Canal View and I knew where every school, pharmacy and ATM was within ten minutes. Saved me hours of asking the guard.','name'=>'Hira K.','role'=>'Phase 2, new resident','color'=>'#f59e0b'],
       ];
       foreach ($testimonials as $t) :
         $initials = implode('', array_map(fn($w) => strtoupper($w[0]), array_slice(explode(' ', $t['name']), 0, 2)));
@@ -686,12 +698,12 @@ $member_count  = (int) count_users()['total_users'];
 /* ── Demo data helpers ─────────────────────── */
 function nc_fp_demo_events(array $colors, array $emojis, int $limit = 6, int $offset = 0) {
   $demos = [
-    ['t'=>'Community Block Party','d'=>'2026-05-24','tm'=>'10:00 AM','l'=>'Gulberg III Park, Lahore','cat'=>'community','rsvp'=>24,'desc'=>'A vibrant block party with music, food stalls, and games for the whole family. Meet your neighbours!'],
-    ['t'=>'Saturday Farmers Market','d'=>'2026-05-25','tm'=>'8:00 AM','l'=>'Liberty Market, Lahore','cat'=>'food','rsvp'=>56,'desc'=>'Fresh produce, homemade goods, and local artisans every Saturday morning. Support local!'],
-    ['t'=>'Kids Soccer League','d'=>'2026-05-27','tm'=>'4:00 PM','l'=>'DHA Phase 5, Lahore','cat'=>'sports','rsvp'=>18,'desc'=>'Weekly soccer matches for kids aged 6–14. All skill levels welcome. Bring water!'],
-    ['t'=>'Neighbourhood Clean-Up','d'=>'2026-05-31','tm'=>'9:00 AM','l'=>'Johar Town Park, Lahore','cat'=>'environment','rsvp'=>12,'desc'=>'Help keep our streets clean. Gloves and bags provided. A great way to give back.'],
-    ['t'=>'Art Workshop','d'=>'2026-06-02','tm'=>'2:00 PM','l'=>'NCA Mall Road, Lahore','cat'=>'arts','rsvp'=>9,'desc'=>'An afternoon of painting and sketching. All materials provided. No experience needed!'],
-    ['t'=>'Morning Yoga in the Park','d'=>'2026-06-05','tm'=>'6:30 AM','l'=>'Jilani Park, Lahore','cat'=>'health','rsvp'=>31,'desc'=>'Start your day with refreshing outdoor yoga. All fitness levels. Bring your own mat.'],
+    ['t'=>'Phase 1 Block Party & Iftar','d'=>'2026-05-24','tm'=>'6:00 PM','l'=>'Phase 1 Community Lawn','cat'=>'community','rsvp'=>54,'desc'=>'A community get-together for all Canal View residents — live music, dinner stalls, and games for the whole family.'],
+    ['t'=>'Sunday Bachat Bazaar','d'=>'2026-05-25','tm'=>'8:00 AM','l'=>'Society Commercial Block','cat'=>'food','rsvp'=>71,'desc'=>'Fresh produce, homemade tiffin and crafts — by Canal View residents, for Canal View residents. Every Sunday.'],
+    ['t'=>'Kids Cricket League — Phase 2','d'=>'2026-05-27','tm'=>'4:30 PM','l'=>'Phase 2 Sports Ground','cat'=>'sports','rsvp'=>24,'desc'=>'Tape-ball cricket for kids aged 8–14. Coaches from the society sports committee. Helmets and tape balls provided.'],
+    ['t'=>'Canal Bank Clean-Up Drive','d'=>'2026-05-31','tm'=>'7:30 AM','l'=>'Canal Bank Walking Track','cat'=>'environment','rsvp'=>18,'desc'=>'Help keep the canal-side walking track clean. Gloves and bags provided by the maintenance desk.'],
+    ['t'=>'Quran & Calligraphy Workshop','d'=>'2026-06-02','tm'=>'3:00 PM','l'=>'Jamia Masjid Canal View Hall','cat'=>'arts','rsvp'=>14,'desc'=>'Calligraphy session for adults and teenagers, hosted at the Phase 1 masjid hall. All materials provided.'],
+    ['t'=>'Morning Yoga at Ladies Park','d'=>'2026-06-05','tm'=>'6:30 AM','l'=>'Ladies Park, Phase 1','cat'=>'health','rsvp'=>22,'desc'=>'Start your day with outdoor yoga at the in-society Ladies Park. Suitable for all levels. Bring your own mat.'],
   ];
   $events_url = esc_url(home_url('/events/'));
   $demos = array_slice($demos, 0, $limit);
@@ -723,12 +735,12 @@ function nc_fp_demo_events(array $colors, array $emojis, int $limit = 6, int $of
 
 function nc_fp_demo_services(array $colors, int $limit = 6, int $offset = 0) {
   $demos = [
-    ['n'=>'Ahmeds Plumbing','cat'=>'Plumbing','r'=>4.9,'rv'=>47,'p'=>'From $60/hr','i'=>'🔧'],
-    ['n'=>'Green Thumb Garden','cat'=>'Gardening','r'=>4.7,'rv'=>32,'p'=>'From $40/hr','i'=>'🌿'],
-    ['n'=>'Sarahs Tutoring','cat'=>'Education','r'=>5.0,'rv'=>18,'p'=>'$35/session','i'=>'📚'],
-    ['n'=>'Clean Sweep Co.','cat'=>'Cleaning','r'=>4.8,'rv'=>63,'p'=>'From $80/visit','i'=>'✨'],
-    ['n'=>'TechHelp Hub','cat'=>'IT Support','r'=>4.6,'rv'=>25,'p'=>'$50/hr','i'=>'💻'],
-    ['n'=>'Paws and Claws','cat'=>'Pet Care','r'=>4.9,'rv'=>41,'p'=>'$25/walk','i'=>'🐾'],
+    ['n'=>'Plumbing',      'cat'=>'On-call society team','r'=>4.9,'rv'=>47,'p'=>'Request via wizard','i'=>'🔧'],
+    ['n'=>'Electrical',    'cat'=>'On-call society team','r'=>4.8,'rv'=>32,'p'=>'Request via wizard','i'=>'💡'],
+    ['n'=>'Carpentry',     'cat'=>'On-call society team','r'=>4.7,'rv'=>18,'p'=>'Request via wizard','i'=>'🪚'],
+    ['n'=>'Cleaning',      'cat'=>'On-call society team','r'=>4.8,'rv'=>63,'p'=>'Request via wizard','i'=>'🧹'],
+    ['n'=>'Pest Control',  'cat'=>'On-call society team','r'=>4.6,'rv'=>25,'p'=>'Request via wizard','i'=>'🐜'],
+    ['n'=>'Tiffin / Food', 'cat'=>'Daily home-style meals','r'=>4.9,'rv'=>41,'p'=>'Pay the team directly','i'=>'🍱'],
   ];
   $services_url = esc_url(home_url('/services/'));
   $demos = array_slice($demos, 0, $limit);
@@ -740,19 +752,19 @@ function nc_fp_demo_services(array $colors, int $limit = 6, int $offset = 0) {
     echo '<div class="service-avatar-placeholder" style="background:' . esc_attr($bg) . ';">' . esc_html($d['i']) . '</div>';
     echo '<div class="service-info"><div class="service-name"><a href="' . $services_url . '">' . esc_html($d['n']) . '</a></div><div class="service-cat">' . esc_html($d['cat']) . '</div></div>';
     echo '</div>';
-    echo '<div class="service-rating"><span class="stars">' . $stars . '</span><span>' . esc_html($d['r']) . '</span><span>(' . esc_html($d['rv']) . ' reviews)</span></div>';
-    echo '<p class="service-desc">Professional, reliable, and trusted by ' . esc_html($d['rv']) . ' neighbours in your area.</p>';
-    echo '<div class="service-foot"><div class="service-price">' . esc_html($d['p']) . '</div><a href="' . $services_url . '" class="btn btn-secondary btn-sm">Contact</a></div>';
+    echo '<div class="service-rating"><span class="stars">' . $stars . '</span><span>' . esc_html($d['r']) . '</span><span>(' . esc_html($d['rv']) . ' residents served)</span></div>';
+    echo '<p class="service-desc">In-house team for Canal View Society residents. Trusted by ' . esc_html($d['rv']) . ' neighbours and counting.</p>';
+    echo '<div class="service-foot"><div class="service-price">' . esc_html($d['p']) . '</div><a href="' . $services_url . '" class="btn btn-secondary btn-sm">Request</a></div>';
     echo '</div>';
   }
 }
 
 function nc_fp_demo_issues(int $limit = 4) {
   $demos = [
-    ['t'=>'Broken Streetlight — Main Boulevard','d'=>'The streetlight has been out for 3 weeks, creating a safety hazard for pedestrians at night.','s'=>'open','v'=>23,'l'=>'Main Blvd & 5th, Gulberg','ago'=>'2 days'],
-    ['t'=>'Large Pothole on Canal Road','d'=>'Has caused multiple flat tyres. Reported to council weeks ago but no action taken yet.','s'=>'in-progress','v'=>18,'l'=>'Canal Rd near Doctors Hospital','ago'=>'5 days'],
-    ['t'=>'Overflowing Bin at Park Entrance','d'=>'Not emptied in 10 days. Attracting pests and creating an unsanitary mess at the main gate.','s'=>'open','v'=>11,'l'=>'Jilani Park, Lahore','ago'=>'3 days'],
-    ['t'=>'Speed Bump Needed Near School','d'=>'Cars speeding past primary school during pick-up time. Multiple near misses reported.','s'=>'resolved','v'=>47,'l'=>'Beaconhouse School, DHA','ago'=>'1 week'],
+    ['t'=>'Broken Streetlight — Phase 1 Boulevard','d'=>'The streetlight has been out for 3 weeks, creating a safety hazard for pedestrians and cyclists at night.','s'=>'open','v'=>23,'l'=>'Phase 1 Main Boulevard, Canal View','ago'=>'2 days'],
+    ['t'=>'Pothole on Canal Bank Road','d'=>'Has caused multiple flat tyres near the main gate. Reported to maintenance but no action yet.','s'=>'in-progress','v'=>18,'l'=>'Canal Bank Road, opposite main gate','ago'=>'5 days'],
+    ['t'=>'Overflowing Bin at Ladies Park Gate','d'=>'Not emptied in 4 days. Attracting stray cats and creating an unsanitary mess at the park entrance.','s'=>'open','v'=>11,'l'=>'Ladies Park, Phase 1','ago'=>'3 days'],
+    ['t'=>'Speed Bump Needed Near Allied School','d'=>'Cars speeding past the in-society school at pick-up time. Multiple near misses reported.','s'=>'resolved','v'=>47,'l'=>'Allied School Campus, Phase 2','ago'=>'1 week'],
   ];
   $pl = ['open'=>'pill-open','in-progress'=>'pill-in-progress','resolved'=>'pill-resolved'];
   $sl = ['open'=>'Open','in-progress'=>'In Progress','resolved'=>'Resolved'];

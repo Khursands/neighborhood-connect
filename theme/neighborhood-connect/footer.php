@@ -10,7 +10,7 @@
           <span><?php bloginfo('name'); ?></span>
         </a>
         <p class="footer-tagline">
-          <?php echo esc_html(get_theme_mod('nc_footer_tagline', 'Building stronger, more connected communities one neighborhood at a time.')); ?>
+          <?php echo esc_html(get_theme_mod('nc_footer_tagline', 'Built for the residents of Canal View Cooperative Housing Society, Lahore.')); ?>
         </p>
         <div class="social-links">
           <a href="#" class="social-link" aria-label="Twitter"><i class="fa-brands fa-x-twitter"></i></a>
@@ -26,15 +26,14 @@
           <li><a href="<?php echo esc_url(home_url('/events/')); ?>">Events</a></li>
           <li><a href="<?php echo esc_url(home_url('/services/')); ?>">Services</a></li>
           <li><a href="<?php echo esc_url(home_url('/issues/')); ?>">Report Issue</a></li>
-          <li><a href="<?php echo esc_url(home_url('/blog/')); ?>">Community</a></li>
+          <li><a href="<?php echo esc_url(home_url('/amenities/')); ?>">Neighborhood</a></li>
         </ul>
       </div>
 
       <div class="footer-col">
         <h4>Company</h4>
         <ul>
-          <li><a href="<?php echo esc_url(home_url('/about/')); ?>">About</a></li>
-          <li><a href="<?php echo esc_url(home_url('/blog/')); ?>">Blog</a></li>
+          <li><a href="<?php echo esc_url(home_url('/amenities/')); ?>">About the society</a></li>
           <li><a href="<?php echo esc_url(home_url('/contact/')); ?>">Contact</a></li>
           <li><a href="<?php echo esc_url(rest_url('nc/v1')); ?>">API</a></li>
         </ul>

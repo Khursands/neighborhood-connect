@@ -57,15 +57,25 @@
 
   <?php
   $paged = get_query_var('paged') ?: 1;
-  $events_query = new WP_Query([
+  $show_past = isset($_GET['show']) && $_GET['show'] === 'past';
+  $events_query_args = [
       'post_type'      => 'nc_event',
       'posts_per_page' => 12,
       'paged'          => $paged,
       'post_status'    => 'publish',
       'meta_key'       => '_nc_event_date',
       'orderby'        => 'meta_value',
-      'order'          => 'ASC',
-  ]);
+      'order'          => $show_past ? 'DESC' : 'ASC',
+  ];
+  if (!$show_past) {
+      $events_query_args['meta_query'] = [[
+          'key'     => '_nc_event_date',
+          'value'   => current_time('Y-m-d'),
+          'compare' => '>=',
+          'type'    => 'DATE',
+      ]];
+  }
+  $events_query = new WP_Query($events_query_args);
   ?>
 
   <?php if ($events_query->have_posts()) : ?>

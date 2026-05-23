@@ -18,40 +18,40 @@ get_header();
         <span class="logo-mark"><i class="fa-solid fa-house-chimney"></i></span>
         <span><?php echo esc_html(get_theme_mod('nc_neighborhood', 'Neighborhood')); ?> <em>Connect</em></span>
       </a>
-      <h1 class="auth-brand-headline">Welcome back to your community</h1>
-      <p class="auth-brand-sub">Stay connected with local events, services, and neighbors who make your neighborhood great.</p>
+      <h1 class="auth-brand-headline">Welcome back, Canal View resident</h1>
+      <p class="auth-brand-sub">Sign in to request the in-house service team, RSVP to society events, track issues, and browse everything around your block.</p>
 
       <div class="auth-features">
         <div class="auth-feature-item">
           <div class="auth-feature-icon"><i class="fa-solid fa-calendar-check"></i></div>
           <div>
-            <strong>RSVP to Events</strong>
-            <span>Join block parties, markets &amp; workshops</span>
+            <strong>RSVP to Society Events</strong>
+            <span>Block parties, Sunday bazaar, sports leagues</span>
           </div>
         </div>
         <div class="auth-feature-item">
-          <div class="auth-feature-icon"><i class="fa-solid fa-briefcase"></i></div>
+          <div class="auth-feature-icon"><i class="fa-solid fa-screwdriver-wrench"></i></div>
           <div>
-            <strong>Hire Local Services</strong>
-            <span>Trusted providers in your neighborhood</span>
+            <strong>In-House Services</strong>
+            <span>Plumber, electrician, tiffin — at your door</span>
           </div>
         </div>
         <div class="auth-feature-item">
           <div class="auth-feature-icon"><i class="fa-solid fa-triangle-exclamation"></i></div>
           <div>
-            <strong>Report Issues</strong>
-            <span>Help keep your streets safe and clean</span>
+            <strong>Report Society Issues</strong>
+            <span>Streetlights, potholes, security concerns</span>
           </div>
         </div>
       </div>
 
       <div class="auth-testimonial">
-        <p>"Neighborhood Connect brought our block together. I found my plumber, joined the Saturday market, and met 20 new neighbors in one month!"</p>
+        <p>"Canal View finally feels like a managed community. The Sunday bazaar, the in-house plumber a tap away, and a live list of every nearby school and pharmacy — it's like a welcome book that's always up to date."</p>
         <div class="auth-testimonial-author">
-          <div class="avatar-initials" style="background:#4f46e5;width:36px;height:36px;font-size:.8rem;">ML</div>
+          <div class="avatar-initials" style="background:#4f46e5;width:36px;height:36px;font-size:.8rem;">SA</div>
           <div>
-            <strong>Maria L.</strong>
-            <span>Oak Street resident</span>
+            <strong>Saima A.</strong>
+            <span>Canal View · Phase 1</span>
           </div>
         </div>
       </div>
